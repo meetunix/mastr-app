@@ -88,7 +88,7 @@ app.layout = html.Div(
             value="tab-1-static-table",
             children=[
                 MastrMainTab(
-                    label="Statische Tabellen",
+                    label="Tabellen",
                     value="tab-1-static-table",
                     children=div_static_table,
                 ),
