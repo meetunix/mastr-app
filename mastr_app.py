@@ -11,7 +11,7 @@ from mastr_webapp.download import download_div
 from datetime import datetime
 
 # app = Dash(__name__, suppress_callback_exceptions=True)
-app = Dash(__name__)
+app = Dash(__name__, title="MaStR-App")
 server = app.server
 mastr_static = RESTClient()
 
@@ -95,12 +95,12 @@ app.layout = html.Div(
                     value="tab-1-static-table",
                     children=div_static_table,
                 ),
+                MastrMainTab(label="Downloads", value="tab-3-downloads", children=download_div),
                 MastrMainTab(
                     label="Dynamische Abfrage",
                     value="tab-2-dynamic-query",
                     children="NYI - coming soon",
                 ),
-                MastrMainTab(label="Downloads", value="tab-3-downloads", children=download_div),
                 MastrMainTab(label="Impressum", value="tab-10-impressum", children=impressum_div),
             ],
             style=mastr_styles.main_tabs_style,

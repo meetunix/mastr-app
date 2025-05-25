@@ -7,6 +7,7 @@ from .util_web import RESTClient
 download_div = html.Div(
     id="div-download",
     children=[
+        html.H4("Derzeit stehen nur Downloads für die Energieträger Wind und Solar bereit."),
         html.Div(
             dcc.Dropdown(
                 [es.value for es in EnergySources],
