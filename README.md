@@ -12,7 +12,7 @@ Der aktuelle Stand der Anwendung kann unter https://mastr.nachtsieb.de getestet 
 
 ## Download der konvertierten Formate
 
-Die konvertierten Daten werden täglich aus dem Marktstammdatenregister erzäugt und stehen für den automatisierten
+Die konvertierten Daten werden täglich aus dem Marktstammdatenregister erzeugt und stehen für den automatisierten
 Download unter https://mastr-static.nachtsieb.de zur Verfügung.
 
 Die Lizenzbestimmungen finden sich im Impressum auf https://mastr.nachtsieb.de.
