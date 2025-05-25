@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "bidict>=0.23.1",
-    "dash>=3.0.3",
+    "dash>=3.0.4",
     "pandas>=2.2.3",
     "requests>=2.32.3",
 ]
