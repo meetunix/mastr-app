@@ -1,6 +1,7 @@
 import mastr_webapp.styles as mastr_styles
 import mastr_webapp.tables as mastr_tables
-from dash import Dash, html, dcc, callback, Input, Output
+from dash import Dash, html, dcc, callback, Input, Output, State
+from dash.dcc import Location
 from dash.dcc import Dropdown, Tab, Tabs, Store
 from mastr_webapp.util_web import RESTClient
 from mastr_webapp.strings import *
@@ -81,11 +82,13 @@ div_static_table = html.Div(
     ]
 )
 
+# Update your layout: Add dcc.Location
 app.layout = html.Div(
     [
+        dcc.Location(id="url", refresh=False),   # add this!
         Tabs(
             id="mastr-main-tabs",
-            value="tab-1-static-table",
+            value="tab-1-static-table",  # default value
             children=[
                 MastrMainTab(
                     label="Tabellen",
@@ -106,20 +109,23 @@ app.layout = html.Div(
     ]
 )
 
-# callback for tabs, if needed
-# @callback(Output('tabs-main-content', 'children'),
-#              Input('mastr-main-tabs', 'value'))
-# def render_content(tab):
-#    if tab == 'tab-1-static-table':
-#        return div_static_table
-#    elif tab == 'tab-2-example-graph':
-#        return html.Div([html.H3('Tab content 2')])
+# URL PATH <-> TAB VALUE mapping
+TAB_PATHS = {
+    "/": "tab-1-static-table",
+    "/static": "tab-1-static-table",
+    "/query": "tab-2-dynamic-query",
+    "/downloads": "tab-3-downloads",
+    "/impressum": "tab-10-impressum",
+}
 
-
-# @callback(Output("loading-table-1", "children"), Input("div-static-table", "children"))
-# def input_triggers_nested(value):
-#    return value
-
+# Callback to set the tab based on the incoming URL PATH
+@callback(
+    Output("mastr-main-tabs", "value"),
+    Input("url", "pathname"),
+    prevent_initial_call=False,
+)
+def select_tab_from_url(pathname):
+    return TAB_PATHS.get(pathname, "tab-1-static-table")
 
 @callback(
     Output("label-dump-timestamp", "children"),
