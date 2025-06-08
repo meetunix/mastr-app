@@ -1,0 +1,10 @@
+services:
+
+  mastr-app:
+    pull_policy: if_not_present
+    image: mastr-app:latest
+    build: Docker
+    container_name: mastr-app
+    restart: on-failure
+    ports:
+      - "127.0.0.1:8081:8081"

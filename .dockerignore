@@ -1,0 +1,9 @@
+*
+!assets
+!conf
+!mastr_webapp
+!mastr_app.py
+!mastr-app.wsgi
+!pyproject.toml
+!uv.lock
+!LICENSE
