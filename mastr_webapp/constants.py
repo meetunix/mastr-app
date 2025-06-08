@@ -1,8 +1,16 @@
+import os
 from enum import Enum
-from unittest.mock import DEFAULT
 
-MASTR_STATIC_URL = "https://mastr-static.nachtsieb.de"
-MASTR_STATIC_EXPORTS_URL = MASTR_STATIC_URL + "/exports/"
+
+def get_env_var(env_key: str) -> str:
+    env_value = os.getenv(env_key)
+    if env_value is None:
+        raise ValueError(f"Environment variable {env_key} is not set.")
+    return env_value
+
+
+MASTR_STATIC_URL = get_env_var("MASTR_STATIC_URL")
+MASTR_STATIC_EXPORTS_URL = MASTR_STATIC_URL + "/export/"
 MASTR_SOURCE_URL = "https://www.marktstammdatenregister.de/MaStR/Datendownload"
 
 __IMPORT_TIMESTAMP_PATH = "/import_timestamp"

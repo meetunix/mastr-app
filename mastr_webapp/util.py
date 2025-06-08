@@ -26,7 +26,9 @@ def latinify(input: str) -> str:
     return out
 
 
-def get_download_url(source: EnergySources, entity: str, format_type: DownloadFormats) -> str:
+def get_download_url(
+    source: EnergySources, entity: str, format_type: DownloadFormats
+) -> str:
     s = MASTR_STATIC_EXPORTS_URL
     # todo directory - e.g. exports/wind/...
     s += source.name.lower() + "_"
@@ -36,7 +38,9 @@ def get_download_url(source: EnergySources, entity: str, format_type: DownloadFo
 
 
 if __name__ == "__main__":
-    print(replace_filetype_on_url("https://example.com/path/to/special.file.type", "toml"))
+    print(
+        replace_filetype_on_url("https://example.com/path/to/special.file.type", "toml")
+    )
     print(replace_filetype_on_url("https://example.com/path/to/special", "toml"))
     print(replace_filetype_on_path("/some/file/path/special", "pigz"))
     print(replace_filetype_on_path("/some/file/path/special.gz", "pigz"))

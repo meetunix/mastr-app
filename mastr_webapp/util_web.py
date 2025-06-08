@@ -1,6 +1,5 @@
 from typing import Optional
 
-import requests
 from requests import Session, Response
 
 
