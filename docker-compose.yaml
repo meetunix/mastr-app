@@ -8,5 +8,6 @@ services:
     restart: on-failure
     environment:
       MASTR_STATIC_URL: https://mastr-static.nachtsieb.de
+      MASTR_STATIC_PUBLIC_URL: ${MASTR_STATIC_PUBLIC_URL}
     ports:
       - "127.0.0.1:8081:8080"

@@ -10,7 +10,9 @@ def get_env_var(env_key: str) -> str:
 
 
 MASTR_STATIC_URL = get_env_var("MASTR_STATIC_URL")
+MASTR_STATIC_PUBLIC_URL = get_env_var("MASTR_STATIC_PUBLIC_URL")
 MASTR_STATIC_EXPORTS_URL = MASTR_STATIC_URL + "/export/"
+MASTR_STATIC_EXPORTS_PUBLIC_URL = MASTR_STATIC_PUBLIC_URL + "/export/"
 MASTR_SOURCE_URL = "https://www.marktstammdatenregister.de/MaStR/Datendownload"
 
 __IMPORT_TIMESTAMP_PATH = "/import_timestamp"

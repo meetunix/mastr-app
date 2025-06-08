@@ -1,7 +1,7 @@
 from pathlib import Path
 from urllib.parse import urlparse, urlunparse
 
-from .constants import EnergySources, DownloadFormats, MASTR_STATIC_EXPORTS_URL
+from .constants import EnergySources, DownloadFormats, MASTR_STATIC_EXPORTS_URL, MASTR_STATIC_EXPORTS_PUBLIC_URL
 
 
 def replace_filetype_on_path(old: str, new_type: str) -> str:
@@ -17,6 +17,10 @@ def replace_filetype_on_url(url: str, new_type: str) -> str:
     return str(urlunparse(url))
 
 
+def to_public_url(url: str) -> str:
+    return url.replace(MASTR_STATIC_EXPORTS_URL, MASTR_STATIC_EXPORTS_PUBLIC_URL)
+
+
 def latinify(input: str) -> str:
     umlauts = [("ä", "ae"), ("ü", "ue"), ("ö", "oe")]
     out = input
@@ -26,21 +30,20 @@ def latinify(input: str) -> str:
     return out
 
 
-def get_download_url(
-    source: EnergySources, entity: str, format_type: DownloadFormats
-) -> str:
-    s = MASTR_STATIC_EXPORTS_URL
-    # todo directory - e.g. exports/wind/...
-    s += source.name.lower() + "_"
-    s += latinify(entity.lower())
-    s += format_type.value
-    return s
+def get_download_url(source: EnergySources, entity: str, format_type: DownloadFormats) -> str:
+    return MASTR_STATIC_EXPORTS_URL + __get_download_url_path(source, entity, format_type)
+
+
+def get_download_public_url(source: EnergySources, entity: str, format_type: DownloadFormats) -> str:
+    return MASTR_STATIC_EXPORTS_PUBLIC_URL + __get_download_url_path(source, entity, format_type)
+
+
+def __get_download_url_path(source: EnergySources, entity: str, format_type: DownloadFormats) -> str:
+    return source.name.lower() + "_" + latinify(entity.lower()) + format_type.value
 
 
 if __name__ == "__main__":
-    print(
-        replace_filetype_on_url("https://example.com/path/to/special.file.type", "toml")
-    )
+    print(replace_filetype_on_url("https://example.com/path/to/special.file.type", "toml"))
     print(replace_filetype_on_url("https://example.com/path/to/special", "toml"))
     print(replace_filetype_on_path("/some/file/path/special", "pigz"))
     print(replace_filetype_on_path("/some/file/path/special.gz", "pigz"))

@@ -1,10 +1,11 @@
 import json
+from datetime import datetime
 
 import pandas as pd
-from datetime import datetime
 from dash import html, callback, Input, Output, dcc, no_update, State
-from dash.dcc import Download
 from dash.dash_table import DataTable
+from dash.dcc import Download
+
 from .strings import *
 from .util import *
 from .util_web import RESTClient
@@ -94,7 +95,6 @@ def get_static_table_download() -> html.Div:
                             id="button-static-download-dataset",
                             className="mastr-button",
                         ),
-                        href="https://mastr-static.nachtsieb.de/exports/dump_date",
                         id="link-static-download-dataset",
                     ),
                 ]
@@ -107,7 +107,6 @@ def get_static_table_download() -> html.Div:
                             id="button-static-download-excel",
                             className="mastr-button",
                         ),
-                        href="https://mastr-static.nachtsieb.de/exports/dump_date",
                         id="link-static-download-excel",
                     ),
                 ]
@@ -120,7 +119,6 @@ def get_static_table_download() -> html.Div:
                             id="button-static-download-parquet",
                             className="mastr-button",
                         ),
-                        href="https://mastr-static.nachtsieb.de/exports/dump_date",
                         id="link-static-download-parquet",
                     ),
                 ]
@@ -190,12 +188,14 @@ def update_download_buttons(value):
     excel_url = replace_filetype_on_url(table_url, ".xlsx")
     parq_url = replace_filetype_on_url(table_url, ".parq")
 
+    csv_pub, excel_pub, parq_pub = to_public_url(table_url), to_public_url(excel_url), to_public_url(parq_url)
+
     return (
-        table_url,
+        csv_pub,
         f"Datensatz als CSV (.csv, {rest_client.get_file_size_mib(table_url):.2f} MiB)",
-        excel_url,
+        excel_pub,
         f"Datensatz als Excel (.xlsx, {rest_client.get_file_size_mib(excel_url):.2f} MiB)",
-        parq_url,
+        parq_pub,
         f"Datensatz als Parquet (.parq, {rest_client.get_file_size_mib(parq_url):.2f} MiB)",
     )
 
