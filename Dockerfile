@@ -1,5 +1,5 @@
-FROM debian:12-slim AS builder
-COPY --from=ghcr.io/astral-sh/uv:0.7.11 /uv /uvx /bin/
+FROM debian:13-slim AS builder
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 RUN apt-get update && \
     apt-get install -y python3 && \
@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-editable
 
 
-FROM debian:12-slim
+FROM debian:13-slim
 
 RUN apt-get update && \
     apt-get install -y apache2 libapache2-mod-wsgi-py3 && \

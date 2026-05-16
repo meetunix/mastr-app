@@ -1,8 +1,8 @@
 services:
 
   mastr-app:
-    pull_policy: if_not_present
     image: mastr-app:latest
+    pull_policy: if_not_present
     build: .
     container_name: mastr-app
     restart: on-failure
