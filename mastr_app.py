@@ -1,14 +1,15 @@
+from datetime import datetime
+
+from dash import Dash, html, dcc, callback, Input, Output, State
+from dash.dcc import Dropdown, Tab, Tabs, Store
+from dash.dcc import Location
+
 import mastr_webapp.styles as mastr_styles
 import mastr_webapp.tables as mastr_tables
-from dash import Dash, html, dcc, callback, Input, Output, State
-from dash.dcc import Location
-from dash.dcc import Dropdown, Tab, Tabs, Store
-from mastr_webapp.util_web import RESTClient
-from mastr_webapp.strings import *
-from mastr_webapp.impressum import impressum_div
 from mastr_webapp.download import download_div
-
-from datetime import datetime
+from mastr_webapp.impressum import impressum_div
+from mastr_webapp.strings import *
+from mastr_webapp.util_web import RESTClient
 
 # app = Dash(__name__, suppress_callback_exceptions=True)
 app = Dash(__name__, title="MaStR-App")
@@ -28,6 +29,7 @@ dropdown_state = Dropdown(
     [static_table_states[s] for s in TABLE_SOURCE_ENTITY_URL],
     static_table_states[TABLE_SOURCE_ENTITY_URL.WIND_MV],
     id="state-table-dropdown",
+    searchable=False,
 )
 
 div_static_table = html.Div(
