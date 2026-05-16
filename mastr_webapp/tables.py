@@ -8,7 +8,7 @@ from dash.dcc import Download
 
 from .strings import *
 from .util import *
-from .util_web import RESTClient
+from .util_web import cached_file_size_mib, cached_read_csv
 
 
 def get_static_table() -> DataTable:
@@ -72,7 +72,7 @@ def get_static_table() -> DataTable:
 )
 def update_output(value):
     table_url = static_table_states.inverse[value].value
-    df = pd.read_csv(table_url)
+    df = cached_read_csv(table_url)
     columns = [{"name": i, "id": i, "deletable": False, "selectable": False} for i in df.columns]
     tooltip_data = [
         {column: {"value": str(value), "type": "markdown"} for column, value in row.items()}
@@ -184,7 +184,6 @@ def get_static_table_download() -> html.Div:
 )
 def update_download_buttons(value):
     table_url = static_table_states.inverse[value].value
-    rest_client = RESTClient()
     excel_url = replace_filetype_on_url(table_url, ".xlsx")
     parq_url = replace_filetype_on_url(table_url, ".parq")
 
@@ -192,11 +191,11 @@ def update_download_buttons(value):
 
     return (
         csv_pub,
-        f"Datensatz als CSV (.csv, {rest_client.get_file_size_mib(table_url):.2f} MiB)",
+        f"Datensatz als CSV (.csv, {cached_file_size_mib(table_url):.2f} MiB)",
         excel_pub,
-        f"Datensatz als Excel (.xlsx, {rest_client.get_file_size_mib(excel_url):.2f} MiB)",
+        f"Datensatz als Excel (.xlsx, {cached_file_size_mib(excel_url):.2f} MiB)",
         parq_pub,
-        f"Datensatz als Parquet (.parq, {rest_client.get_file_size_mib(parq_url):.2f} MiB)",
+        f"Datensatz als Parquet (.parq, {cached_file_size_mib(parq_url):.2f} MiB)",
     )
 
 

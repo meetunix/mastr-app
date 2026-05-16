@@ -3,7 +3,7 @@ from dash import html, dcc, callback, Input, Output
 from .constants import EnergySources, ENTITY_MAP, DownloadFormats
 from .styles import download_dropdown_style
 from .util import get_download_url, get_download_public_url
-from .util_web import RESTClient
+from .util_web import cached_file_size_mib
 
 download_div = html.Div(
     id="div-download",
@@ -71,8 +71,7 @@ def set_download_dynamic_button(source, entity_key, format):
     if None not in (source, entity_key, format) and entity_key in entities:
         url = get_download_url(EnergySources(source), entities[entity_key], DownloadFormats(format))
         public_url = get_download_public_url(EnergySources(source), entities[entity_key], DownloadFormats(format))
-        rest_client = RESTClient()
-        file_size = rest_client.get_file_size_mib(url)
+        file_size = cached_file_size_mib(url)
         if file_size is None:
             return f"{DownloadFormats(format).name} nicht verfügbar", url
         return f"{DownloadFormats(format).name} ({file_size:.2f} MiB)", public_url
