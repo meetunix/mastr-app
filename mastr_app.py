@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from dash import Dash, html, dcc, callback, Input, Output, State
+from dash import Dash, html, dcc, callback, Input, Output, State, clientside_callback
 from dash.dcc import Dropdown, Tab, Tabs, Store
 from dash.dcc import Location
 
@@ -108,6 +108,7 @@ app.layout = html.Div(
             style=mastr_styles.main_tabs_style,
         ),
         html.Div(id="tabs-content-example-graph"),
+        html.Div(id="url-sync-dummy", style={"display": "none"}),
     ]
 )
 
@@ -115,10 +116,37 @@ app.layout = html.Div(
 TAB_PATHS = {
     "/": "tab-1-static-table",
     "/static": "tab-1-static-table",
+    "/tabellen": "tab-1-static-table",
     "/query": "tab-2-dynamic-query",
+    "/abfrage": "tab-2-dynamic-query",
     "/downloads": "tab-3-downloads",
+    "/download": "tab-3-downloads",
     "/impressum": "tab-10-impressum",
 }
+
+# Clientside callback to update URL when tab changes.
+# Outputs to a hidden dummy element (instead of url.pathname) to avoid a
+# dependency cycle with the server-side `select_tab_from_url` callback.
+clientside_callback(
+    """
+    function(tab_value) {
+        var pathMap = {
+            "tab-1-static-table": "/tabellen",
+            "tab-2-dynamic-query": "/abfrage",
+            "tab-3-downloads": "/download",
+            "tab-10-impressum": "/impressum"
+        };
+        var newPath = pathMap[tab_value] || "/";
+        if (window.location.pathname !== newPath) {
+            window.history.pushState({}, "", newPath);
+        }
+        return "";
+    }
+    """,
+    Output("url-sync-dummy", "children"),
+    Input("mastr-main-tabs", "value"),
+)
+
 
 # Callback to set the tab based on the incoming URL PATH
 @callback(
