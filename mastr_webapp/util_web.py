@@ -96,6 +96,15 @@ def cached_read_csv(url: str) -> pd.DataFrame:
         return df
 
 
+def get_cached_dataframe(url: str) -> Optional[pd.DataFrame]:
+    """Return the cached DataFrame for *url* without triggering a fetch.
+
+    Returns None if the URL has not been cached yet.
+    """
+    cached = _csv_cache.get(url)
+    return cached[1] if cached else None
+
+
 @lru_cache(maxsize=512)
 def cached_file_size_mib(url: str) -> Optional[float]:
     return shared_client.get_file_size_mib(url)

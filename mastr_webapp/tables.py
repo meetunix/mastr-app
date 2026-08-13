@@ -2,14 +2,13 @@ import json
 from datetime import datetime
 
 import dash_bootstrap_components as dbc
-import pandas as pd
 from dash import html, callback, Input, Output, dcc, no_update, State
 from dash.dash_table import DataTable
 from dash.dcc import Download
 
 from .strings import *
 from .util import *
-from .util_web import cached_file_size_mib, cached_read_csv
+from .util_web import cached_file_size_mib, cached_read_csv, get_cached_dataframe
 
 
 def get_static_table() -> DataTable:
@@ -80,8 +79,7 @@ def update_output(value):
         for row in df.to_dict("records")
     ]
 
-    json_to_store = df.to_json()
-    return df.to_dict("records"), columns, tooltip_data, json_to_store
+    return df.to_dict("records"), columns, tooltip_data, table_url
 
 
 def get_static_table_download() -> dbc.Row:
@@ -230,7 +228,7 @@ def update_button_row_counter(rows):
     State("stored-selected-rows", "data"),
     prevent_initial_call=True,
 )
-def download_selected_rows(n_clicks, stored_table_data, stored_selected_rows):
+def download_selected_rows(n_clicks, table_url, stored_selected_rows):
     if stored_selected_rows is None:
         return no_update
     rows = json.loads(stored_selected_rows)
@@ -240,7 +238,9 @@ def download_selected_rows(n_clicks, stored_table_data, stored_selected_rows):
 
     rows = sorted(rows)
 
-    df = pd.DataFrame(json.loads(stored_table_data))
+    df = get_cached_dataframe(table_url)
+    if df is None:
+        return no_update
     df = df.iloc[rows]
     filename = f"mastr-tool-export-{datetime.now().strftime('%Y-%m-%d_%H%M%S')}.csv"
     return dcc.send_data_frame(df.to_csv, filename, index=False)
@@ -251,11 +251,11 @@ def download_selected_rows(n_clicks, stored_table_data, stored_selected_rows):
     Output("download-static-filtered", "data"),
     Output("button-static-filtered", "n_clicks"),
     Input("button-static-filtered", "n_clicks"),
-    Input("static-table", "derived_virtual_indices"),
+    State("static-table", "derived_virtual_indices"),
     State("stored-static-table", "data"),
     prevent_initial_call=True,
 )
-def download_filtered_rows(n_clicks, filtered_row_ids, stored_table_data):
+def download_filtered_rows(n_clicks, filtered_row_ids, table_url):
     if n_clicks is None:
         return no_update
 
@@ -267,7 +267,9 @@ def download_filtered_rows(n_clicks, filtered_row_ids, stored_table_data):
 
     filtered_rows = sorted(filtered_row_ids)
 
-    df = pd.DataFrame(json.loads(stored_table_data))
+    df = get_cached_dataframe(table_url)
+    if df is None:
+        return no_update
     df = df.iloc[filtered_rows]
     filename = f"mastr-tool-export-{datetime.now().strftime('%Y-%m-%d_%H%M%S')}.csv"
     return dcc.send_data_frame(df.to_csv, filename, index=False), None
