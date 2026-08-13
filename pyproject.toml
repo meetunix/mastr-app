@@ -1,6 +1,6 @@
 [project]
 name = "mastr-app"
-version = "0.2.0"
+version = "0.2.1"
 description = "Webanwendung zur Suche und zum Download von Marktstammdatenregister-Daten in alternativen Formaten."
 readme = "README.md"
 requires-python = ">=3.13"
