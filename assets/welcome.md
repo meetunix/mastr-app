@@ -6,3 +6,5 @@ MaStR-App ermöglicht die Suche und den Download von Daten des
 
 Die Daten stammen aus dem öffentlich zugänglichen
 [Gesamtdatenauszug des Marktstammdatenregisters](https://www.marktstammdatenregister.de/MaStR/Datendownload).
+
+MaStR ist nicht für mobile Endgeräte optimiert.
