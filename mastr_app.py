@@ -11,7 +11,7 @@ from mastr_webapp.strings import *
 from mastr_webapp.util_web import shared_client as mastr_static
 from mastr_webapp.welcome import welcome_modal
 
-app = Dash(__name__, title="MaStR-App", external_stylesheets=[dbc.themes.FLATLY], suppress_callback_exceptions=True)
+app = Dash(__name__, title="MaStR-App", suppress_callback_exceptions=True)
 server = app.server
 
 
