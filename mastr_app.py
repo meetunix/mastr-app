@@ -133,6 +133,8 @@ app.layout = dbc.Container(
                         "Daten: Marktstammdatenregister der Bundesnetzagentur",
                         " · ",
                         html.A("Impressum", href="/impressum", className="text-decoration-none"),
+                        " · ",
+                        html.A("Code", href="https://codeberg.org/nachtsieb/mastr-app", className="text-decoration-none"),
                     ],
                     className="text-muted mb-0",
                 ),
