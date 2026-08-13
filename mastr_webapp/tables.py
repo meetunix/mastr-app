@@ -129,7 +129,7 @@ def get_static_table_download() -> html.Div:
                         id="loading-button-static-selected",
                         children=[
                             html.Button(
-                                children="Auswahl als CSV (0)})",
+                                children="Auswahl als CSV (0)",
                                 id="button-static-selected",
                                 className="mastr-button",
                             ),
@@ -189,13 +189,21 @@ def update_download_buttons(value):
 
     csv_pub, excel_pub, parq_pub = to_public_url(table_url), to_public_url(excel_url), to_public_url(parq_url)
 
+    csv_size = cached_file_size_mib(table_url)
+    excel_size = cached_file_size_mib(excel_url)
+    parq_size = cached_file_size_mib(parq_url)
+
+    csv_label = f"Datensatz als CSV (.csv, {csv_size:.2f} MiB)" if csv_size is not None else "Datensatz als CSV (.csv, nicht verfügbar)"
+    excel_label = f"Datensatz als Excel (.xlsx, {excel_size:.2f} MiB)" if excel_size is not None else "Datensatz als Excel (.xlsx, nicht verfügbar)"
+    parq_label = f"Datensatz als Parquet (.parq, {parq_size:.2f} MiB)" if parq_size is not None else "Datensatz als Parquet (.parq, nicht verfügbar)"
+
     return (
         csv_pub,
-        f"Datensatz als CSV (.csv, {cached_file_size_mib(table_url):.2f} MiB)",
+        csv_label,
         excel_pub,
-        f"Datensatz als Excel (.xlsx, {cached_file_size_mib(excel_url):.2f} MiB)",
+        excel_label,
         parq_pub,
-        f"Datensatz als Parquet (.parq, {cached_file_size_mib(parq_url):.2f} MiB)",
+        parq_label,
     )
 
 
@@ -220,7 +228,7 @@ def update_button_row_counter(rows):
     State("stored-selected-rows", "data"),
     prevent_initial_call=True,
 )
-def download_rows(n_clicks, stored_table_data, stored_selected_rows):
+def download_selected_rows(n_clicks, stored_table_data, stored_selected_rows):
     if stored_selected_rows is None:
         return no_update
     rows = json.loads(stored_selected_rows)
@@ -245,7 +253,7 @@ def download_rows(n_clicks, stored_table_data, stored_selected_rows):
     State("stored-static-table", "data"),
     prevent_initial_call=True,
 )
-def download_rows(n_clicks, filtered_row_ids, stored_table_data):
+def download_filtered_rows(n_clicks, filtered_row_ids, stored_table_data):
     if n_clicks is None:
         return no_update
 

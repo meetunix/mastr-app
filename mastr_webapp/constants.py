@@ -1,11 +1,13 @@
 import os
+import sys
 from enum import Enum
 
 
 def get_env_var(env_key: str) -> str:
     env_value = os.getenv(env_key)
     if env_value is None:
-        raise ValueError(f"Environment variable {env_key} is not set.")
+        print(f"Error: Environment variable {env_key} is not set.", file=sys.stderr)
+        sys.exit(1)
     return env_value
 
 

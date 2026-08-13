@@ -1,9 +1,9 @@
 [project]
 name = "mastr-app"
 version = "0.1.0"
-description = "Add your description here"
+description = "Webanwendung zur Suche und zum Download von Marktstammdatenregister-Daten in alternativen Formaten."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
     "bidict>=0.23.1",
     "dash>=3.0.4",

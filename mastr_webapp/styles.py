@@ -10,7 +10,7 @@ main_tab_selected_style = {
     "backgroundColor": "#008060",
     "color": "white",
     "padding": "10px",
-    "textAlign:": "center",
+    "textAlign": "center",
     "fontWeight": "bold",
 }
 

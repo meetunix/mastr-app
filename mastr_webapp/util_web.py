@@ -31,7 +31,7 @@ class RESTClient:
         return r.text
 
     def __query_head(self, url: str) -> Response:
-        r = self.session.head(url, headers={"Accept-Encoding": "bytes"})
+        r = self.session.head(url)
 
         if r.status_code != 200:
             raise MastrHTTPQueryException(
@@ -49,7 +49,7 @@ class RESTClient:
 
 
 # Shared client so cached helpers reuse a single connection pool.
-_shared_client = RESTClient()
+shared_client = RESTClient()
 
 # ETag-validated cache for parsed CSV DataFrames: {url: (etag, dataframe)}.
 # Per-URL locks coalesce concurrent fetches so the upstream isn't hammered
@@ -79,7 +79,7 @@ def cached_read_csv(url: str) -> pd.DataFrame:
     with _get_csv_url_lock(url):
         cached = _csv_cache.get(url)
         headers = {"If-None-Match": cached[0]} if cached and cached[0] else {}
-        response = _shared_client.session.get(url, headers=headers)
+        response = shared_client.session.get(url, headers=headers)
 
         if response.status_code == 304 and cached is not None:
             return cached[1]
@@ -98,4 +98,4 @@ def cached_read_csv(url: str) -> pd.DataFrame:
 
 @lru_cache(maxsize=512)
 def cached_file_size_mib(url: str) -> Optional[float]:
-    return _shared_client.get_file_size_mib(url)
+    return shared_client.get_file_size_mib(url)

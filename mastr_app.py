@@ -9,12 +9,11 @@ import mastr_webapp.tables as mastr_tables
 from mastr_webapp.download import download_div
 from mastr_webapp.impressum import impressum_div
 from mastr_webapp.strings import *
-from mastr_webapp.util_web import RESTClient
+from mastr_webapp.util_web import shared_client as mastr_static
 
 # app = Dash(__name__, suppress_callback_exceptions=True)
 app = Dash(__name__, title="MaStR-App")
 server = app.server
-mastr_static = RESTClient()
 
 
 class MastrMainTab(Tab):
