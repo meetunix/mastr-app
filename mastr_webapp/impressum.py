@@ -1,7 +1,16 @@
 from dash import html, dcc, callback, Input, Output
 from pathlib import Path
+import tomllib
 
 impressum_div = html.Div(id="div-impressum", children=[dcc.Markdown(id="md-impressum")])
+
+
+def _app_version():
+    try:
+        with open("pyproject.toml", "rb") as f:
+            return tomllib.load(f)["project"]["version"]
+    except Exception:
+        return None
 
 
 @callback(Output("md-impressum", "children"), Input("url", "pathname"))
@@ -11,4 +20,7 @@ def refresh_impressum(pathname):
     except Exception as e:
         print(e)
         impressum = "NA"
+    version = _app_version()
+    if version:
+        impressum += f"\n\n---\n\n**Version:** `{version}`\n"
     return impressum
