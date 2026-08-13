@@ -1,24 +1,18 @@
 import dash_bootstrap_components as dbc
 from dash import dcc, Input, Output, State, clientside_callback
+from pathlib import Path
+
+try:
+    _welcome_text = Path("assets/welcome.md").read_text(encoding="utf-8")
+except Exception as e:
+    print(e)
+    _welcome_text = "NA"
 
 welcome_modal = dbc.Modal(
     [
         dbc.ModalHeader(dbc.ModalTitle("Willkommen")),
         dbc.ModalBody(
-            dcc.Markdown(
-                """
-Diese Webanwendung ermöglicht die Suche in und den Download von Daten des
-**Marktstammdatenregisters** der Bundesnetzagentur in alternativen Formaten.
-
-- **Tabellen** — Durchsuchen Sie Windenergieanlagen nach Bundesland.
-- **Downloads** — Laden Sie Datenauszüge als CSV oder Parquet herunter.
-- **Impressum** — Informationen zu Datenquelle, Lizenz und Haftung.
-
-Die Daten stammen aus dem öffentlich zugänglichen
-[Gesamtdatenauszug des Marktstammdatenregisters](https://www.marktstammdatenregister.de/MaStR/Datendownload).
-Es handelt sich um ein privates Projekt ohne kommerzielle Ziele.
-"""
-            )
+            dcc.Markdown(_welcome_text)
         ),
         dbc.ModalFooter(
             dbc.Button(

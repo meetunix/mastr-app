@@ -1,9 +1,7 @@
-## Impressum
 
 ```plain
 Martin Steinbach
-Fährstr. 38 
-Rostock
+18055 Rostock
 ```
 
 E-Mail: `mastr@nachtsieb.de`

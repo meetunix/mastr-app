@@ -6,7 +6,7 @@ from dash.dcc import Dropdown, Store
 
 import mastr_webapp.tables as mastr_tables
 from mastr_webapp.download import download_div
-from mastr_webapp.impressum import impressum_div
+from mastr_webapp.impressum import impressum_div, _app_version
 from mastr_webapp.strings import *
 from mastr_webapp.util_web import shared_client as mastr_static
 from mastr_webapp.welcome import welcome_modal
@@ -109,7 +109,6 @@ app.layout = dbc.Container(
                         [
                             dbc.NavLink("Tabellen", href="/tabellen", id="nav-tabellen"),
                             dbc.NavLink("Downloads", href="/download", id="nav-download"),
-                            dbc.NavLink("Impressum", href="/impressum", id="nav-impressum"),
                         ],
                         navbar=True,
                         className="me-auto",
@@ -123,8 +122,24 @@ app.layout = dbc.Container(
             className="mb-4",
         ),
         html.Div(id="page-content"),
-        dcc.Store(id="welcome-shown", data=False),
+        dcc.Store(id="welcome-shown", data=False, storage_type="local"),
         welcome_modal,
+        html.Footer(
+            dbc.Container(
+                html.P(
+                    [
+                        f"MaStR-App v{_app_version() or '?'}",
+                        " · ",
+                        "Daten: Marktstammdatenregister der Bundesnetzagentur",
+                        " · ",
+                        html.A("Impressum", href="/impressum", className="text-decoration-none"),
+                    ],
+                    className="text-muted mb-0",
+                ),
+                fluid=True,
+            ),
+            className="border-top mt-5 py-3",
+        ),
     ],
     fluid=True,
 )
@@ -160,7 +175,6 @@ def render_page(pathname):
 @callback(
     Output("nav-tabellen", "active"),
     Output("nav-download", "active"),
-    Output("nav-impressum", "active"),
     Input("url", "pathname"),
     prevent_initial_call=False,
 )
@@ -169,7 +183,6 @@ def set_active_nav(pathname):
     return (
         tab == "tab-1-static-table",
         tab == "tab-3-downloads",
-        tab == "tab-10-impressum",
     )
 
 @callback(
