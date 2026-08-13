@@ -20,7 +20,7 @@ download_div = dbc.Container(
         dbc.Row(
             dbc.Col(
                 dcc.Dropdown(
-                    [es.value for es in EnergySources],
+                    [es.value for es in EnergySources if es in (EnergySources.WIND, EnergySources.SOLAR)],
                     value=EnergySources.WIND.value,
                     id="dropdown-download-source",
                     searchable=False,
