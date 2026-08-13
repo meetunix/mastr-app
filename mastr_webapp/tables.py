@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import html, callback, Input, Output, dcc, no_update, State
 from dash.dash_table import DataTable
@@ -83,93 +84,94 @@ def update_output(value):
     return df.to_dict("records"), columns, tooltip_data, json_to_store
 
 
-def get_static_table_download() -> html.Div:
-    return html.Div(
+def get_static_table_download() -> dbc.Row:
+    return dbc.Row(
         id="div-static-download-buttons",
         children=[
-            html.Div(
-                [
-                    html.A(
-                        html.Button(
-                            children="Datensatz als CSV (.csv)",
-                            id="button-static-download-dataset",
-                            className="mastr-button",
-                        ),
-                        id="link-static-download-dataset",
+            dbc.Col(
+                html.A(
+                    dbc.Button(
+                        "Datensatz als CSV (.csv)",
+                        id="button-static-download-dataset",
+                        color="light",
                     ),
-                ]
+                    id="link-static-download-dataset",
+                ),
+                width="auto",
+                className="me-2",
             ),
-            html.Div(
-                [
-                    html.A(
-                        html.Button(
-                            children="Datensatz als Excel (.xlsx)",
-                            id="button-static-download-excel",
-                            className="mastr-button",
-                        ),
-                        id="link-static-download-excel",
+            dbc.Col(
+                html.A(
+                    dbc.Button(
+                        "Datensatz als Excel (.xlsx)",
+                        id="button-static-download-excel",
+                        color="light",
                     ),
-                ]
+                    id="link-static-download-excel",
+                ),
+                width="auto",
+                className="me-2",
             ),
-            html.Div(
-                [
-                    html.A(
-                        html.Button(
-                            children="Datensatz als Parquet (.parq)",
-                            id="button-static-download-parquet",
-                            className="mastr-button",
-                        ),
-                        id="link-static-download-parquet",
+            dbc.Col(
+                html.A(
+                    dbc.Button(
+                        "Datensatz als Parquet (.parq)",
+                        id="button-static-download-parquet",
+                        color="light",
                     ),
-                ]
+                    id="link-static-download-parquet",
+                ),
+                width="auto",
+                className="me-2",
             ),
-            html.Div(
-                [
-                    dcc.Loading(
-                        id="loading-button-static-selected",
-                        children=[
-                            html.Button(
-                                children="Auswahl als CSV (0)",
-                                id="button-static-selected",
-                                className="mastr-button",
-                            ),
-                            Download(id="download-static-selected"),
-                        ],
-                        type="circle",
-                        delay_show=300,
-                        className="loading-button",
-                        overlay_style={"visibility": "visible", "filter": "blur(2px)"},
-                    )
-                ]
+            dbc.Col(
+                dcc.Loading(
+                    id="loading-button-static-selected",
+                    children=[
+                        dbc.Button(
+                            "Auswahl als CSV (0)",
+                            id="button-static-selected",
+                            color="light",
+                        ),
+                        Download(id="download-static-selected"),
+                    ],
+                    type="circle",
+                    delay_show=300,
+                    className="loading-button",
+                    overlay_style={"visibility": "visible", "filter": "blur(2px)"},
+                ),
+                width="auto",
+                className="me-2",
             ),
-            html.Div(
-                [
-                    dcc.Loading(
-                        id="loading-button-static-filtered",
-                        children=[
-                            html.Button(
-                                children="Filterergebnis als CSV",
-                                id="button-static-filtered",
-                                className="mastr-button",
-                            ),
-                            Download(id="download-static-filtered"),
-                        ],
-                        type="circle",
-                        delay_show=300,
-                        className="loading-button",
-                        overlay_style={"visibility": "visible", "filter": "blur(2px)"},
-                    )
-                ],
+            dbc.Col(
+                dcc.Loading(
+                    id="loading-button-static-filtered",
+                    children=[
+                        dbc.Button(
+                            "Filterergebnis als CSV",
+                            id="button-static-filtered",
+                            color="light",
+                        ),
+                        Download(id="download-static-filtered"),
+                    ],
+                    type="circle",
+                    delay_show=300,
+                    className="loading-button",
+                    overlay_style={"visibility": "visible", "filter": "blur(2px)"},
+                ),
+                width="auto",
+                className="me-2",
             ),
-            html.Div(
-                html.Button(
-                    children="Auswahl aufheben",
+            dbc.Col(
+                dbc.Button(
+                    "Auswahl aufheben",
                     id="button-static-erase",
-                    className="mastr-button",
-                )
+                    color="light",
+                ),
+                width="auto",
+                className="me-2",
             ),
         ],
-        style={"display": "flex"},
     )
 
 
@@ -277,7 +279,7 @@ def download_filtered_rows(n_clicks, filtered_row_ids, stored_table_data):
     Input("button-static-erase", "n_clicks"),
     prevent_initial_call=True,
 )
-def update_button_row_counter(n_clicks):
+def erase_selected_rows(n_clicks):
     if n_clicks is None:
         return no_update
     else:

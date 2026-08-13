@@ -1,27 +1,18 @@
 from datetime import datetime
 
-from dash import Dash, html, dcc, callback, Input, Output, State, clientside_callback
-from dash.dcc import Dropdown, Tab, Tabs, Store
-from dash.dcc import Location
+import dash_bootstrap_components as dbc
+from dash import Dash, html, dcc, callback, Input, Output
+from dash.dcc import Dropdown, Store
 
-import mastr_webapp.styles as mastr_styles
 import mastr_webapp.tables as mastr_tables
 from mastr_webapp.download import download_div
 from mastr_webapp.impressum import impressum_div
 from mastr_webapp.strings import *
 from mastr_webapp.util_web import shared_client as mastr_static
+from mastr_webapp.welcome import welcome_modal
 
-# app = Dash(__name__, suppress_callback_exceptions=True)
-app = Dash(__name__, title="MaStR-App")
+app = Dash(__name__, title="MaStR-App", external_stylesheets=[dbc.themes.FLATLY], suppress_callback_exceptions=True)
 server = app.server
-
-
-class MastrMainTab(Tab):
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.style = mastr_styles.main_tab_style
-        self.selected_style = mastr_styles.main_tab_selected_style
 
 
 dropdown_state = Dropdown(
@@ -29,132 +20,157 @@ dropdown_state = Dropdown(
     static_table_states[TABLE_SOURCE_ENTITY_URL.WIND_MV],
     id="state-table-dropdown",
     searchable=False,
+    clearable=False,
+    style={"fontSize": "1.15rem"},
 )
 
-div_static_table = html.Div(
-    children=[
-        html.Div(
-            children=[
-                html.H3(children="Übersicht Windenergieanlagen - Marktstammdatenregister der Bundesnetzagentur."),
-                html.Div(
+div_static_table = dbc.Container(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
                     [
-                        html.Label(
-                            "Zeitstempel MaStR-Daten:",
-                            style={"width": "16em", "display": "inline-block"},
+                        html.H3(
+                            "Tabellen",
+                            className="border-bottom pb-3 mb-3",
                         ),
-                        html.Label("NA", id="label-dump-timestamp"),
-                    ],
-                    title="Datum an dem der MaStR-Datenauszug bei der Bundesnetzagentur erstellt wurde.",
-                ),
-                html.Div(
-                    [
-                        html.Label(
-                            "Zeitpunkt Import: ",
-                            style={"width": "16em", "display": "inline-block"},
+                        html.P(
+                            "Übersicht der Windenergieanlagen aus dem Marktstammdatenregister der Bundesnetzagentur.",
+                            className="text-muted fs-5 mb-3",
                         ),
-                        html.Label("NA", id="label-import-timestamp"),
-                    ],
-                    title="Zeitpunkt an dem die MaStR-Daten importiert wurden.",
-                ),
+                        html.Div(
+                            [
+                                html.Label(
+                                    "Zeitstempel MaStR-Daten:",
+                                    className="col-form-label",
+                                    style={"width": "16em", "display": "inline-block"},
+                                ),
+                                html.Label("NA", id="label-dump-timestamp"),
+                            ],
+                            title="Datum an dem der MaStR-Datenauszug bei der Bundesnetzagentur erstellt wurde.",
+                        ),
+                        html.Div(
+                            [
+                                html.Label(
+                                    "Zeitpunkt Import: ",
+                                    className="col-form-label",
+                                    style={"width": "16em", "display": "inline-block"},
+                                ),
+                                html.Label("NA", id="label-import-timestamp"),
+                            ],
+                            title="Zeitpunkt an dem die MaStR-Daten importiert wurden.",
+                        ),
+                    ]
+                )
             ]
         ),
-        html.Div(
-            children=dropdown_state,
-            style={
-                "width": "20%",
-                "minWidth": "120px",
-                "paddingBottom": "10px",
-                "paddingTop": "10px",
-            },
+        dbc.Row(
+            dbc.Col(
+                dropdown_state,
+                width="auto",
+                style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px"},
+            )
         ),
-        html.Div(
-            id="div-static-table",
-            children=[
-                dcc.Loading(
-                    id="loading-table-1",
-                    children=[mastr_tables.get_static_table()],
-                    type="circle",
-                ),
-            ],
+        dbc.Row(
+            dbc.Col(
+                html.Div(
+                    id="div-static-table",
+                    children=[
+                        dcc.Loading(
+                            id="loading-table-1",
+                            children=[mastr_tables.get_static_table()],
+                            type="circle",
+                            className="mb-5",
+                        ),
+                    ],
+                )
+            )
         ),
-        html.Div(id="div-static-buttons", children=mastr_tables.get_static_table_download()),
+        dbc.Row(
+            dbc.Col(
+                html.Div(id="div-static-buttons", children=mastr_tables.get_static_table_download())
+            )
+        ),
         Store(id="stored-static-table"),
         Store(id="stored-selected-rows"),
-    ]
+    ],
+    fluid=True,
 )
 
 # Update your layout: Add dcc.Location
-app.layout = html.Div(
+app.layout = dbc.Container(
     [
-        dcc.Location(id="url", refresh=False),   # add this!
-        Tabs(
-            id="mastr-main-tabs",
-            value="tab-1-static-table",  # default value
-            children=[
-                MastrMainTab(
-                    label="Tabellen",
-                    value="tab-1-static-table",
-                    children=div_static_table,
-                ),
-                MastrMainTab(label="Downloads", value="tab-3-downloads", children=download_div),
-                MastrMainTab(
-                    label="Dynamische Abfrage",
-                    value="tab-2-dynamic-query",
-                    children="NYI - coming soon",
-                ),
-                MastrMainTab(label="Impressum", value="tab-10-impressum", children=impressum_div),
-            ],
-            style=mastr_styles.main_tabs_style,
+        dcc.Location(id="url", refresh=False),
+        dbc.Navbar(
+            dbc.Container(
+                [
+                    dbc.NavbarBrand("MaStR-App", href="/", className="me-5"),
+                    dbc.Nav(
+                        [
+                            dbc.NavLink("Tabellen", href="/tabellen", id="nav-tabellen"),
+                            dbc.NavLink("Downloads", href="/download", id="nav-download"),
+                            dbc.NavLink("Impressum", href="/impressum", id="nav-impressum"),
+                        ],
+                        navbar=True,
+                        className="me-auto",
+                        style={"fontSize": "1.15rem"},
+                    ),
+                ],
+                fluid=True,
+            ),
+            dark=False,
+            color="light",
+            className="mb-4",
         ),
-        html.Div(id="tabs-content-example-graph"),
-        html.Div(id="url-sync-dummy", style={"display": "none"}),
-    ]
+        html.Div(id="page-content"),
+        dcc.Store(id="welcome-shown", data=False),
+        welcome_modal,
+    ],
+    fluid=True,
 )
+
+# URL PATH -> content mapping
+PAGE_CONTENT = {
+    "tab-1-static-table": div_static_table,
+    "tab-3-downloads": download_div,
+    "tab-10-impressum": impressum_div,
+}
 
 # URL PATH <-> TAB VALUE mapping
 TAB_PATHS = {
     "/": "tab-1-static-table",
     "/static": "tab-1-static-table",
     "/tabellen": "tab-1-static-table",
-    "/query": "tab-2-dynamic-query",
-    "/abfrage": "tab-2-dynamic-query",
     "/downloads": "tab-3-downloads",
     "/download": "tab-3-downloads",
     "/impressum": "tab-10-impressum",
 }
 
-# Clientside callback to update URL when tab changes.
-# Outputs to a hidden dummy element (instead of url.pathname) to avoid a
-# dependency cycle with the server-side `select_tab_from_url` callback.
-clientside_callback(
-    """
-    function(tab_value) {
-        var pathMap = {
-            "tab-1-static-table": "/tabellen",
-            "tab-2-dynamic-query": "/abfrage",
-            "tab-3-downloads": "/download",
-            "tab-10-impressum": "/impressum"
-        };
-        var newPath = pathMap[tab_value] || "/";
-        if (window.location.pathname !== newPath) {
-            window.history.pushState({}, "", newPath);
-        }
-        return "";
-    }
-    """,
-    Output("url-sync-dummy", "children"),
-    Input("mastr-main-tabs", "value"),
-)
 
-
-# Callback to set the tab based on the incoming URL PATH
 @callback(
-    Output("mastr-main-tabs", "value"),
+    Output("page-content", "children"),
     Input("url", "pathname"),
     prevent_initial_call=False,
 )
-def select_tab_from_url(pathname):
-    return TAB_PATHS.get(pathname, "tab-1-static-table")
+def render_page(pathname):
+    tab = TAB_PATHS.get(pathname, "tab-1-static-table")
+    return PAGE_CONTENT[tab]
+
+
+@callback(
+    Output("nav-tabellen", "active"),
+    Output("nav-download", "active"),
+    Output("nav-impressum", "active"),
+    Input("url", "pathname"),
+    prevent_initial_call=False,
+)
+def set_active_nav(pathname):
+    tab = TAB_PATHS.get(pathname, "tab-1-static-table")
+    return (
+        tab == "tab-1-static-table",
+        tab == "tab-3-downloads",
+        tab == "tab-10-impressum",
+    )
 
 @callback(
     Output("label-dump-timestamp", "children"),

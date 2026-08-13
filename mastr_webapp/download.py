@@ -1,50 +1,79 @@
+import dash_bootstrap_components as dbc
 from dash import html, dcc, callback, Input, Output
 
-from .constants import EnergySources, ENTITY_MAP, DownloadFormats
-from .styles import download_dropdown_style
+from .constants import EnergySources, ENTITY_MAP, DownloadFormats, DEFAULT_ENTITY_VALUE, WIND_ENTITES
 from .util import get_download_url, get_download_public_url
 from .util_web import cached_file_size_mib
 
-download_div = html.Div(
+download_div = dbc.Container(
     id="div-download",
+    fluid=True,
     children=[
-        html.H4("Derzeit stehen nur Downloads für die Energieträger Wind und Solar bereit."),
-        html.Div(
-            dcc.Dropdown(
-                [es.value for es in EnergySources],
-                value=EnergySources.WIND.value,
-                id="dropdown-download-source",
-                searchable=False,
-            ),
-            id="div-download-source",
-            style=download_dropdown_style,
+        html.H3(
+            "Downloads",
+            className="border-bottom pb-3 mb-3",
         ),
-        html.Div(
-            dcc.Dropdown(
-                ["None"],
-                value="DE",
-                id="dropdown-download-entity",
-                searchable=False,
-            ),
-            id="div-download-entity",
-            style=download_dropdown_style,
+        html.P(
+            "Derzeit stehen Downloads für die Energieträger Wind und Solar bereit.",
+            className="text-muted fs-5 mb-3",
         ),
-        html.Div(
-            dcc.Dropdown(
-                [{"label": fm.name, "value": fm.value} for fm in DownloadFormats],
-                value=DownloadFormats.CSV.value,
-                id="dropdown-download-format",
-                searchable=False,
-            ),
-            id="div-energy-format",
-            style=download_dropdown_style,
+        dbc.Row(
+            dbc.Col(
+                dcc.Dropdown(
+                    [es.value for es in EnergySources],
+                    value=EnergySources.WIND.value,
+                    id="dropdown-download-source",
+                    searchable=False,
+                    clearable=False,
+                    style={"fontSize": "1.15rem"},
+                ),
+                width="auto",
+                style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px"},
+            )
         ),
-        html.Div(
-            html.A(
-                html.Button("Download", id="button-dynamic-download", className="mastr-button"),
-                id="link-dynamic-download",
-            ),
-            id="div-dynamic-download",
+        dbc.Row(
+            dbc.Col(
+                dcc.Dropdown(
+                    [{"label": v, "value": k} for k, v in WIND_ENTITES.items()],
+                    value=DEFAULT_ENTITY_VALUE,
+                    id="dropdown-download-entity",
+                    searchable=False,
+                    clearable=False,
+                    style={"fontSize": "1.15rem"},
+                ),
+                width="auto",
+                style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px"},
+            )
+        ),
+        dbc.Row(
+            dbc.Col(
+                dcc.Dropdown(
+                    [{"label": fm.name, "value": fm.value} for fm in DownloadFormats],
+                    value=DownloadFormats.CSV.value,
+                    id="dropdown-download-format",
+                    searchable=False,
+                    clearable=False,
+                    style={"fontSize": "1.15rem"},
+                ),
+                width="auto",
+                style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px"},
+            )
+        ),
+        dbc.Row(
+            dbc.Col(
+                html.A(
+                    dbc.Button(
+                        "Download",
+                        id="button-dynamic-download",
+                        color="light",
+                        className="w-100",
+                    ),
+                    id="link-dynamic-download",
+                    className="w-100",
+                ),
+                width="auto",
+                style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px"},
+            )
         ),
     ],
 )
@@ -52,11 +81,13 @@ download_div = html.Div(
 
 @callback(
     Output("dropdown-download-entity", "options"),
+    Output("dropdown-download-entity", "value"),
     Input("dropdown-download-source", "value"),
 )
 def set_download_entity(value):
     entity = ENTITY_MAP[EnergySources(value)]
-    return [{"label": v, "value": k} for k, v in entity.items()]
+    options = [{"label": v, "value": k} for k, v in entity.items()]
+    return options, DEFAULT_ENTITY_VALUE
 
 
 @callback(

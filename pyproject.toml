@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "bidict>=0.23.1",
     "dash>=3.0.4",
+    "dash-bootstrap-components>=1.6.0",
     "pandas>=2.2.3",
     "requests>=2.32.3",
 ]

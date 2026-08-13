@@ -1,8 +1,19 @@
-from dash import html, dcc, callback, Input, Output
+import dash_bootstrap_components as dbc
+from dash import dcc, html, callback, Input, Output
 from pathlib import Path
 import tomllib
 
-impressum_div = html.Div(id="div-impressum", children=[dcc.Markdown(id="md-impressum")])
+impressum_div = dbc.Container(
+    id="div-impressum",
+    fluid=True,
+    children=[
+        html.H3(
+            "Impressum",
+            className="border-bottom pb-3 mb-3",
+        ),
+        dcc.Markdown(id="md-impressum"),
+    ],
+)
 
 
 def _app_version():

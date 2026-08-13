@@ -31,7 +31,7 @@ class RESTClient:
         return r.text
 
     def __query_head(self, url: str) -> Response:
-        r = self.session.head(url)
+        r = self.session.head(url, headers={"Accept-Encoding": "identity"})
 
         if r.status_code != 200:
             raise MastrHTTPQueryException(
