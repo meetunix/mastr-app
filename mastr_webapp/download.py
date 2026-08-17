@@ -104,6 +104,6 @@ def set_download_dynamic_button(source, entity_key, format):
         public_url = get_download_public_url(EnergySources(source), entities[entity_key], DownloadFormats(format))
         file_size = cached_file_size_mib(url)
         if file_size is None:
-            return f"{DownloadFormats(format).name} nicht verfügbar", url
+            return f"{DownloadFormats(format).name} nicht verfügbar", public_url
         return f"{DownloadFormats(format).name} ({file_size:.2f} MiB)", public_url
     return "Keine Übereinstimmung", ""
