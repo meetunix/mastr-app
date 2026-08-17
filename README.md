@@ -45,24 +45,24 @@ ingress:
 ### Installieren
 
 ```bash
-helm install mastr-app ./helm/mastr-app -f values.yaml
+helm install mastr-app ./helm/mastr-app -f values.yaml --create-namespace --namespace mastr
 ```
 
 ### Upgraden
 
 ```bash
-helm upgrade mastr-app ./helm/mastr-app -f values.yaml
+helm upgrade mastr-app ./helm/mastr-app -f values.yaml --namespace mastr
 ```
 
 Wird ein neues Image unter demselben Tag (z. B. `latest`) gepusht, reicht `helm upgrade` allein nicht aus, da der
 Pod-Template unverändert bleibt. In diesem Fall zusätzlich einen Rollout anstoßen:
 
 ```bash
-kubectl rollout restart deployment/mastr-app
+kubectl rollout restart deployment/mastr-app --namespace mastr
 ```
 
 ### Deinstallieren
 
 ```bash
-helm uninstall mastr-app
+helm uninstall mastr-app --namespace mastr
 ```
