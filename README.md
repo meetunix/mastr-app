@@ -16,3 +16,53 @@ Die konvertierten Daten werden täglich aus dem Marktstammdatenregister erzeugt 
 Download unter https://mastr-static.nachtsieb.de zur Verfügung.
 
 Die Lizenzbestimmungen finden sich unter https://mastr.nachtsieb.de/impressum.
+
+## Deployment auf Kubernetes mit Helm
+
+Im Verzeichnis [`helm/mastr-app`](helm/mastr-app) liegt ein einfaches Helm-Chart für das Deployment auf einem
+Kubernetes-Cluster. Es erzeugt ein Deployment, einen Service und optional einen Ingress.
+
+### Minimalistische `values.yaml`
+
+```yaml
+image:
+  repository: ghcr.io/nachtsieb/mastr-app   # eigene Registry eintragen
+  tag: latest
+
+env:
+  MASTR_STATIC_URL: https://mastr-static.example.com
+  MASTR_STATIC_PUBLIC_URL: https://mastr-static.example.com
+
+ingress:
+  enabled: true
+  hosts:
+    - host: mastr-app.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+```
+
+### Installieren
+
+```bash
+helm install mastr-app ./helm/mastr-app -f values.yaml
+```
+
+### Upgraden
+
+```bash
+helm upgrade mastr-app ./helm/mastr-app -f values.yaml
+```
+
+Wird ein neues Image unter demselben Tag (z. B. `latest`) gepusht, reicht `helm upgrade` allein nicht aus, da der
+Pod-Template unverändert bleibt. In diesem Fall zusätzlich einen Rollout anstoßen:
+
+```bash
+kubectl rollout restart deployment/mastr-app
+```
+
+### Deinstallieren
+
+```bash
+helm uninstall mastr-app
+```

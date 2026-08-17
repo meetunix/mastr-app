@@ -1,0 +1,45 @@
+# Default values for mastr-app.
+# These mirror the docker-compose.yaml setup.
+
+replicaCount: 1
+
+image:
+  repository: mastr-app
+  tag: latest
+  # imagePullPolicy is intentionally unset so Kubernetes applies its default:
+  #   Always        for :latest (or no tag)
+  #   IfNotPresent  for any other tag
+  pullPolicy: ""
+
+service:
+  type: ClusterIP
+  port: 8080
+  # Port the container listens on (Apache in the image).
+  targetPort: 8080
+
+# Environment variables consumed by the app.
+# MASTR_STATIC_PUBLIC_URL is left empty by default; set it to the
+# public-facing URL of the static exports (e.g. via --set or a parent chart).
+env:
+  MASTR_STATIC_URL: https://mastr-static.nachtsieb.de
+  MASTR_STATIC_PUBLIC_URL: ""
+
+# Ingress for exposing mastr-app outside the cluster.
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: mastr.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

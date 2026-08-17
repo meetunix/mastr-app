@@ -1,0 +1,9 @@
+apiVersion: v2
+name: mastr-app
+description: Helm chart for deploying mastr-app on a Kubernetes cluster.
+type: application
+version: 0.1.0
+appVersion: "0.2.2"
+home: https://mastr.nachtsieb.de
+sources:
+  - https://codeberg.org/nachtsieb/mastr-app
