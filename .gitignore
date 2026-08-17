@@ -163,3 +163,4 @@ cython_debug/
 .idea/
 performance_flaws.md
 
+my-values.yaml
