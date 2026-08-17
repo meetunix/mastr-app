@@ -30,7 +30,7 @@ image:
   tag: latest
 
 env:
-  MASTR_STATIC_URL: https://mastr-static.example.com
+  MASTR_STATIC_URL: http://mastr-mastr-tool-static.mastr.svc.cluster.local:8080 # mastr-tool backend - fast access inside cluster
   MASTR_STATIC_PUBLIC_URL: https://mastr-static.example.com
 
 ingress:
