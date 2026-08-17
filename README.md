@@ -26,7 +26,7 @@ Kubernetes-Cluster. Es erzeugt ein Deployment, einen Service und optional einen 
 
 ```yaml
 image:
-  repository: ghcr.io/nachtsieb/mastr-app   # eigene Registry eintragen
+  repository: nachtsieb/mastr-app
   tag: latest
 
 env:
