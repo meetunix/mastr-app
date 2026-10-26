@@ -6,7 +6,6 @@ from dash import html, callback, Input, Output, dcc, no_update, State
 from dash.dash_table import DataTable
 from dash.dcc import Download
 
-from .strings import *
 from .table_columns import select_display_columns
 from .util import *
 from .util_web import cached_file_size_mib, cached_read_csv, get_cached_dataframe
@@ -84,15 +83,16 @@ def column_width(name: str) -> int:
     return max(240, round(len(name) * 10.6) + 24)
 
 
-# update static table via dropdown: a fresh table instance is created on every
+# update static table via dropdowns: a fresh table instance is created on every
 # switch, so the filter row, sorting and selection start empty for the new table
 @callback(
     Output("static-table-container", "children"),
     Output("stored-static-table", "data"),
+    Input("dropdown-table-source", "value"),
     Input("state-table-dropdown", "value"),
 )
-def update_output(value):
-    table_url = static_table_states.inverse[value].value
+def update_output(source, state):
+    table_url = get_download_url(EnergySources(source), state, DownloadFormats.CSV)
     df = cached_read_csv(table_url)
     # only the configured columns are displayed; the full dataframe stays in
     # the cache and is used by the download buttons (all columns)
@@ -220,10 +220,11 @@ def get_static_table_download() -> dbc.Row:
     Output("button-static-download-excel", "children"),
     Output("link-static-download-parquet", "href"),
     Output("button-static-download-parquet", "children"),
+    Input("dropdown-table-source", "value"),
     Input("state-table-dropdown", "value"),
 )
-def update_download_buttons(value):
-    table_url = static_table_states.inverse[value].value
+def update_download_buttons(source, state):
+    table_url = get_download_url(EnergySources(source), state, DownloadFormats.CSV)
     excel_url = replace_filetype_on_url(table_url, ".xlsx")
     parq_url = replace_filetype_on_url(table_url, ".parq")
 

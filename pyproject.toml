@@ -5,7 +5,6 @@ description = "Webanwendung zur Suche und zum Download von Marktstammdatenregist
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "bidict>=0.23.1",
     "dash>=3.0.4",
     "dash-bootstrap-components>=1.6.0",
     "pandas>=2.2.3",

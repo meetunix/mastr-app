@@ -14,13 +14,23 @@ download_div = dbc.Container(
             className="border-bottom pb-3 mb-3",
         ),
         html.P(
-            "Derzeit stehen Downloads für die Energieträger Wind und Solar bereit.",
+            "Derzeit stehen Downloads für die Energieträger Wind, Solar, Biomasse und Wasser bereit.",
             className="text-muted fs-5 mb-3",
         ),
         dbc.Row(
             dbc.Col(
                 dcc.Dropdown(
-                    [es.value for es in EnergySources if es in (EnergySources.WIND, EnergySources.SOLAR)],
+                    [
+                        es.value
+                        for es in EnergySources
+                        if es
+                        in (
+                            EnergySources.WIND,
+                            EnergySources.SOLAR,
+                            EnergySources.BIOMASSE,
+                            EnergySources.WASSER,
+                        )
+                    ],
                     value=EnergySources.WIND.value,
                     id="dropdown-download-source",
                     searchable=False,

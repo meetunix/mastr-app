@@ -15,9 +15,18 @@ app = Dash(__name__, title="MaStR-App", suppress_callback_exceptions=True)
 server = app.server
 
 
+dropdown_source = Dropdown(
+    [EnergySources.WIND.value, EnergySources.BIOMASSE.value, EnergySources.WASSER.value],
+    EnergySources.WIND.value,
+    id="dropdown-table-source",
+    searchable=False,
+    clearable=False,
+    style={"fontSize": "1.15rem"},
+)
+
 dropdown_state = Dropdown(
-    [static_table_states[s] for s in TABLE_SOURCE_ENTITY_URL],
-    static_table_states[TABLE_SOURCE_ENTITY_URL.WIND_MV],
+    static_table_states,
+    static_table_states[0],
     id="state-table-dropdown",
     searchable=False,
     clearable=False,
@@ -35,7 +44,7 @@ div_static_table = dbc.Container(
                             className="border-bottom pb-3 mb-3",
                         ),
                         html.P(
-                            "Übersicht der Windenergieanlagen aus dem Marktstammdatenregister der Bundesnetzagentur.",
+                            "Übersicht der Anlagen aus dem Marktstammdatenregister der Bundesnetzagentur.",
                             className="text-muted fs-5 mb-3",
                         ),
                         html.Div(
@@ -65,11 +74,40 @@ div_static_table = dbc.Container(
             ]
         ),
         dbc.Row(
-            dbc.Col(
-                dropdown_state,
-                width="auto",
-                style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px"},
-            )
+            [
+                dbc.Col(
+                    html.Label(
+                        "Energieträger",
+                        className="col-form-label",
+                        style={"width": "8em", "display": "inline-block"},
+                    ),
+                    width="auto",
+                ),
+                dbc.Col(
+                    dropdown_source,
+                    width="auto",
+                    style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px"},
+                ),
+            ],
+            align="center",
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    html.Label(
+                        "Bundesland",
+                        className="col-form-label",
+                        style={"width": "8em", "display": "inline-block"},
+                    ),
+                    width="auto",
+                ),
+                dbc.Col(
+                    dropdown_state,
+                    width="auto",
+                    style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px"},
+                ),
+            ],
+            align="center",
         ),
         dbc.Row(
             dbc.Col(
@@ -198,9 +236,10 @@ def set_active_nav(pathname):
 @callback(
     Output("label-dump-timestamp", "children"),
     Output("label-import-timestamp", "children"),
+    Input("dropdown-table-source", "value"),
     Input("state-table-dropdown", "value"),
 )
-def dump_label_refresh(value):
+def dump_label_refresh(source, value):
     try:
         import_time = datetime.fromisoformat(mastr_static.query_get(IMPORT_TIMESTAMP_URL).strip())
         import_time = import_time.strftime("%d.%m.%Y %H:%M Uhr")
