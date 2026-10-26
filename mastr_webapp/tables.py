@@ -7,12 +7,16 @@ from dash.dash_table import DataTable
 from dash.dcc import Download
 
 from .strings import *
+from .table_columns import select_display_columns
 from .util import *
 from .util_web import cached_file_size_mib, cached_read_csv, get_cached_dataframe
 
 
-def get_static_table() -> DataTable:
-    return DataTable(
+def get_static_table(**props) -> DataTable:
+    """Create the static table. Props override the defaults, so the callback
+    can build a fully populated, fresh instance on every table switch (a fresh
+    instance resets filter, sort and selection)."""
+    defaults = dict(
         id="static-table",
         editable=False,
         filter_action="native",
@@ -59,27 +63,63 @@ def get_static_table() -> DataTable:
         },
         tooltip_delay=500,
         tooltip_duration=None,
+        data=[],
+        columns=[],
+        tooltip_data=[],
+        style_cell_conditional=[],
     )
+    defaults.update(props)
+    return DataTable(**defaults)
 
 
-# update static table via dropdown
+def column_width(name: str) -> int:
+    """Estimated pixel width needed to show the full column header.
+
+    Calibrated against the real rendering (dash-table's default font stack
+    resolves to DejaVu Sans on Linux, at the Bootstrap body size of 16px,
+    bold): the widest headers need about 10.6px per character, plus 20px
+    cell padding and a small margin. Columns never shrink below the default
+    width of 240px.
+    """
+    return max(240, round(len(name) * 10.6) + 24)
+
+
+# update static table via dropdown: a fresh table instance is created on every
+# switch, so the filter row, sorting and selection start empty for the new table
 @callback(
-    Output("static-table", "data"),
-    Output("static-table", "columns"),
-    Output("static-table", "tooltip_data"),
+    Output("static-table-container", "children"),
     Output("stored-static-table", "data"),
     Input("state-table-dropdown", "value"),
 )
 def update_output(value):
     table_url = static_table_states.inverse[value].value
     df = cached_read_csv(table_url)
-    columns = [{"name": i, "id": i, "deletable": False, "selectable": False} for i in df.columns]
+    # only the configured columns are displayed; the full dataframe stays in
+    # the cache and is used by the download buttons (all columns)
+    display_df = df[select_display_columns(df)]
+    columns = [{"name": i, "id": i, "deletable": False, "selectable": False} for i in display_df.columns]
     tooltip_data = [
         {column: {"value": str(value), "type": "markdown"} for column, value in row.items()}
-        for row in df.to_dict("records")
+        for row in display_df.to_dict("records")
+    ]
+    # widen columns whose header does not fit the default width of 240px
+    style_cell_conditional = [
+        {
+            "if": {"column_id": name},
+            "minWidth": f"{column_width(name)}px",
+            "width": f"{column_width(name)}px",
+            "maxWidth": f"{column_width(name)}px",
+        }
+        for name in display_df.columns
     ]
 
-    return df.to_dict("records"), columns, tooltip_data, table_url
+    table = get_static_table(
+        data=display_df.to_dict("records"),
+        columns=columns,
+        tooltip_data=tooltip_data,
+        style_cell_conditional=style_cell_conditional,
+    )
+    return [table], table_url
 
 
 def get_static_table_download() -> dbc.Row:

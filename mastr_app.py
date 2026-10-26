@@ -78,7 +78,15 @@ div_static_table = dbc.Container(
                     children=[
                         dcc.Loading(
                             id="loading-table-1",
-                            children=[mastr_tables.get_static_table()],
+                            children=[
+                                # the callback replaces the whole table on every
+                                # table switch, so filter, sort and selection
+                                # start fresh for the new table
+                                html.Div(
+                                    id="static-table-container",
+                                    children=[mastr_tables.get_static_table()],
+                                )
+                            ],
                             type="circle",
                             className="mb-5",
                         ),
