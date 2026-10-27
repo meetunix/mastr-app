@@ -16,7 +16,15 @@ server = app.server
 
 
 dropdown_source = Dropdown(
-    [EnergySources.WIND.value, EnergySources.BIOMASSE.value, EnergySources.WASSER.value],
+    [
+        EnergySources.WIND.value,
+        EnergySources.BIOMASSE.value,
+        EnergySources.WASSER.value,
+        EnergySources.GEOTHERMIE_GRUBENGAS_DRUCKENTSPANNUNG.value,
+        EnergySources.STROMSPEICHER.value,
+        EnergySources.KERNKRAFT.value,
+        EnergySources.VERBRENNUNG.value,
+    ],
     EnergySources.WIND.value,
     id="dropdown-table-source",
     searchable=False,

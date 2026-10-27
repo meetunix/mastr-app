@@ -29,9 +29,11 @@ class EnergySources(Enum):
     WIND = "Wind-Einheiten"
     BIOMASSE = "Biomasse-Einheiten"
     SOLAR = "Solar-Einheiten"
-    KERN = "Kernkraft-Einheiten"
+    KERNKRAFT = "Kernkraft-Einheiten"
     WASSER = "Wasser-Einheiten"
     VERBRENNUNG = "Verbrennung-Einheiten"
+    GEOTHERMIE_GRUBENGAS_DRUCKENTSPANNUNG = "Geothermie/Grubengas/Druckentspannung-Einheiten"
+    STROMSPEICHER = "Stromspeicher-Einheiten"
 
 
 _states = {
@@ -80,20 +82,31 @@ BIOMASSE_ENTITES = {}
 BIOMASSE_ENTITES.update(_nation)
 BIOMASSE_ENTITES.update(_states)
 
-KERN_ENTITES = {}
-KERN_ENTITES.update(_nation)
+KERNKRAFT_ENTITES = {}
+KERNKRAFT_ENTITES.update(_nation)
+KERNKRAFT_ENTITES.update(_states)
 
 WASSER_ENTITES = {}
 WASSER_ENTITES.update(_nation)
 WASSER_ENTITES.update(_states)
 
+GEOTHERMIE_GRUBENGAS_DRUCKENTSPANNUNG_ENTITES = {}
+GEOTHERMIE_GRUBENGAS_DRUCKENTSPANNUNG_ENTITES.update(_nation)
+GEOTHERMIE_GRUBENGAS_DRUCKENTSPANNUNG_ENTITES.update(_states)
+
+STROMSPEICHER_ENTITES = {}
+STROMSPEICHER_ENTITES.update(_nation)
+STROMSPEICHER_ENTITES.update(_states)
+
 ENTITY_MAP = {
     EnergySources.WIND: WIND_ENTITES,
     EnergySources.SOLAR: SOLAR_ENTITES,
     EnergySources.BIOMASSE: BIOMASSE_ENTITES,
-    EnergySources.KERN: KERN_ENTITES,
+    EnergySources.KERNKRAFT: KERNKRAFT_ENTITES,
     EnergySources.WASSER: WASSER_ENTITES,
     EnergySources.VERBRENNUNG: VERBRENNUNG_ENTITES,
+    EnergySources.GEOTHERMIE_GRUBENGAS_DRUCKENTSPANNUNG: GEOTHERMIE_GRUBENGAS_DRUCKENTSPANNUNG_ENTITES,
+    EnergySources.STROMSPEICHER: STROMSPEICHER_ENTITES,
 }
 
 
