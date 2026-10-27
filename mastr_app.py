@@ -77,34 +77,29 @@ div_static_table = dbc.Container(
             [
                 dbc.Col(
                     html.Label(
-                        "Energieträger",
-                        className="col-form-label",
-                        style={"width": "8em", "display": "inline-block"},
+                        "Energieträger:",
+                        className="col-form-label fs-5",
                     ),
                     width="auto",
+                    style={"paddingRight": "0"},
                 ),
                 dbc.Col(
                     dropdown_source,
                     width="auto",
-                    style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px"},
+                    style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px", "paddingLeft": "0.5rem"},
                 ),
-            ],
-            align="center",
-        ),
-        dbc.Row(
-            [
                 dbc.Col(
                     html.Label(
-                        "Bundesland",
-                        className="col-form-label",
-                        style={"width": "8em", "display": "inline-block"},
+                        "Bundesland:",
+                        className="col-form-label fs-5",
                     ),
                     width="auto",
+                    style={"paddingRight": "0"},
                 ),
                 dbc.Col(
                     dropdown_state,
                     width="auto",
-                    style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px"},
+                    style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px", "paddingLeft": "0.5rem"},
                 ),
             ],
             align="center",
