@@ -15,7 +15,8 @@ download_div = dbc.Container(
         ),
         html.P(
             "Derzeit stehen Downloads für die Energieträger Wind, Solar, Biomasse, Wasser, "
-            "Geothermie/Grubengas/Druckentspannung, Stromspeicher, Kernkraft und Verbrennung bereit.",
+            "Geothermie/Grubengas/Druckentspannung, Stromspeicher, Kernkraft, Verbrennung, "
+            "Gaserzeuger, Gasspeicher, Gasverbraucher und Stromverbraucher bereit.",
             className="text-muted fs-5 mb-3",
         ),
         dbc.Row(
