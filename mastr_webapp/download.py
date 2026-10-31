@@ -1,9 +1,19 @@
 import dash_bootstrap_components as dbc
 from dash import html, dcc, callback, Input, Output
 
-from .constants import EnergySources, ENTITY_MAP, DownloadFormats, DEFAULT_ENTITY_VALUE, WIND_ENTITES
+from .constants import (
+    EnergySources,
+    ENTITY_MAP,
+    DownloadFormats,
+    DEFAULT_ENTITY_VALUE,
+    WIND_ENTITES,
+    MASTR_STATIC_EXPORTS_URL,
+    MASTR_STATIC_EXPORTS_PUBLIC_URL,
+)
 from .util import get_download_url, get_download_public_url
 from .util_web import cached_file_size_mib
+
+DB_DUMP_FILE = "mastr-latest.sql"
 
 download_div = dbc.Container(
     id="div-download",
@@ -77,8 +87,39 @@ download_div = dbc.Container(
                 style={"width": "340px", "paddingBottom": "10px", "paddingTop": "10px"},
             )
         ),
+        dbc.Row(
+            dbc.Col(
+                html.A(
+                    dbc.Button(
+                        "Datenbank-Dump",
+                        id="button-db-dump",
+                        color="light",
+                        className="w-100",
+                        style={"fontSize": "0.9rem"},
+                    ),
+                    id="link-db-dump",
+                    href=MASTR_STATIC_EXPORTS_PUBLIC_URL + DB_DUMP_FILE,
+                    className="w-100",
+                ),
+                width="auto",
+                style={"width": "380px", "paddingBottom": "10px", "paddingTop": "20px"},
+            )
+        ),
     ],
 )
+
+
+@callback(
+    Output("button-db-dump", "children"),
+    Input("url", "pathname"),
+)
+def set_db_dump_label(pathname):
+    """Label of the static database dump button: file size if the dump
+    exists, 'nicht verfügbar' until the first pipeline run created it."""
+    file_size = cached_file_size_mib(MASTR_STATIC_EXPORTS_URL + DB_DUMP_FILE)
+    if file_size is None:
+        return "Datenbank-Dump (nicht verfügbar)"
+    return f"Datenbank-Dump (SQL, zstd, {file_size:.2f} MiB)"
 
 
 @callback(
