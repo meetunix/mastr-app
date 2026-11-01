@@ -1,6 +1,6 @@
 import io
 import threading
-from functools import lru_cache
+import time
 from typing import Optional
 
 import pandas as pd
@@ -105,6 +105,25 @@ def get_cached_dataframe(url: str) -> Optional[pd.DataFrame]:
     return cached[1] if cached else None
 
 
-@lru_cache(maxsize=512)
+_FILE_SIZE_TTL_SECONDS = 300
+_file_size_cache: dict[str, tuple[float, float]] = {}  # {url: (fetched_at, size_mib)}
+_file_size_cache_lock = threading.Lock()
+
+
 def cached_file_size_mib(url: str) -> Optional[float]:
-    return shared_client.get_file_size_mib(url)
+    """File size in MiB, cached for a short time.
+
+    Failed lookups are not cached, so a file that appears later (e.g. the
+    database dump after the first pipeline run) is found on the next
+    request. The TTL also keeps displayed sizes fresh across pipeline runs.
+    """
+    now = time.monotonic()
+    with _file_size_cache_lock:
+        cached = _file_size_cache.get(url)
+        if cached is not None and now - cached[0] < _FILE_SIZE_TTL_SECONDS:
+            return cached[1]
+    file_size = shared_client.get_file_size_mib(url)
+    if file_size is not None:
+        with _file_size_cache_lock:
+            _file_size_cache[url] = (now, file_size)
+    return file_size
