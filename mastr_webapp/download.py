@@ -24,9 +24,14 @@ download_div = dbc.Container(
             className="border-bottom pb-3 mb-3",
         ),
         html.P(
-            "Derzeit stehen Downloads für die Energieträger Wind, Solar, Biomasse, Wasser, "
-            "Geothermie/Grubengas/Druckentspannung, Stromspeicher, Kernkraft, Verbrennung, "
-            "Gaserzeuger, Gasspeicher, Gasverbraucher und Stromverbraucher bereit.",
+            [
+                "Derzeit stehen Downloads für die Energieträger Wind, Solar, Biomasse, Wasser, "
+                "Geothermie/Grubengas/Druckentspannung, Stromspeicher, Kernkraft, Verbrennung, "
+                "Gaserzeuger, Gasspeicher, Gasverbraucher und Stromverbraucher in verschiedenen Formaten bereit. "
+                "Außerdem steht ein vollständiger Datenbankauszug zur Verfügung, der ",
+                html.Strong("alle"),
+                " Tabellen aus dem Marktstammdatenregister enthält.",
+            ],
             className="text-muted fs-5 mb-3",
         ),
         dbc.Row(
@@ -103,6 +108,23 @@ download_div = dbc.Container(
                 ),
                 width="auto",
                 style={"width": "380px", "paddingBottom": "10px", "paddingTop": "20px"},
+            )
+        ),
+        dbc.Row(
+            dbc.Col(
+                html.P(
+                    [
+                        "Der Datenbank-Dump ist ein zstd-komprimiertes ",
+                        html.Code("pg_dump"),
+                        "-Archiv aller Tabellen aus dem Marktstammdatenregister. Zum Einspielen wird mindestens "
+                        "PostgreSQL 16 benötigt: ",
+                        html.Code("pg_restore -U mastr -d mastr --clean mastr-latest.sql"),
+                        " — ein direktes Einlesen mit psql ist wegen des Binärformats nicht möglich.",
+                    ],
+                    className="text-muted small",
+                ),
+                width="auto",
+                style={"maxWidth": "760px", "paddingBottom": "10px"},
             )
         ),
     ],

@@ -1,10 +1,9 @@
 # mastr-app
 
-**in development**
-
 Webanwendung zur Bereitstellung und Suche in den Daten des Marktstammdatenregisters und Download von Filterergebnissen
-und Teildatensätzen (z.B. Alle Windkraftanlagen Deutschlands oder Thüringens) in alternativen Formaten (Parquet, CSV,
-Excel).
+und Teildatensätzen (z.B. Alle Windkraftanlagen oder Verbrennungseinheiten Deutschlands oder Thüringens) in
+alternativen Formaten (Parquet, CSV, Excel). Außerdem kann ein **vollständiger Datenbankauszug** des
+Marktstammdatenregisters als PostgreSQL-Dump heruntergeladen werden.
 
 Der Import, die Anreicherung und die Konvertierung der Daten geschieht im [mastr-tool](https://codeberg.org/nachtsieb/mastr-tool)-Projekt.
 
@@ -12,10 +11,20 @@ Der aktuelle Stand der Anwendung kann unter https://mastr.nachtsieb.de getestet 
 
 ## Download der konvertierten Formate
 
-Die konvertierten Daten werden täglich aus dem Marktstammdatenregister erzeugt und stehen für den automatisierten
+Die konvertierten Daten werden **täglich** aus dem Marktstammdatenregister erzeugt und stehen für den automatisierten
 Download unter https://mastr-static.nachtsieb.de zur Verfügung.
 
 Die Lizenzbestimmungen finden sich unter https://mastr.nachtsieb.de/impressum.
+
+## Deployment mit Docker
+
+```bash
+MASTR_STATIC_PUBLIC_URL=https://mastr-static.example.com docker compose up -d --build
+```
+
+Die WebUI ist anschließend unter `http://127.0.0.1:8081` erreichbar. `MASTR_STATIC_PUBLIC_URL` (öffentliche URL
+des mastr-tool-Exportservers) ist Pflicht, `MASTR_STATIC_URL` (interner Zugriff auf die Exporte) ist in der
+`docker-compose.yaml` vorkonfiguriert.
 
 ## Deployment auf Kubernetes mit Helm
 
