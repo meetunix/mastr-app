@@ -1,3 +1,5 @@
+import os
+import threading
 from datetime import datetime
 
 import dash_bootstrap_components as dbc
@@ -5,6 +7,7 @@ from dash import Dash, html, dcc, callback, Input, Output
 from dash.dcc import Dropdown, Store
 
 import mastr_webapp.tables as mastr_tables
+from mastr_webapp.banner import announce_when_ready
 from mastr_webapp.download import download_div
 from mastr_webapp.impressum import impressum_div, _app_version
 from mastr_webapp.strings import *
@@ -16,17 +19,7 @@ server = app.server
 
 
 dropdown_source = Dropdown(
-    [
-        EnergySources.WIND.value,
-        EnergySources.BIOMASSE.value,
-        EnergySources.WASSER.value,
-        EnergySources.GEOTHERMIE_GRUBENGAS_DRUCKENTSPANNUNG.value,
-        EnergySources.KERNKRAFT.value,
-        EnergySources.VERBRENNUNG.value,
-        EnergySources.GASERZEUGER.value,
-        EnergySources.GASSPEICHER.value,
-        EnergySources.GASVERBRAUCHER.value,
-    ],
+    static_table_sources,
     EnergySources.WIND.value,
     id="dropdown-table-source",
     searchable=False,
@@ -142,6 +135,7 @@ div_static_table = dbc.Container(
                 html.Div(id="div-static-buttons", children=mastr_tables.get_static_table_download())
             )
         ),
+        dbc.Row(dbc.Col(html.Div(id="static-download-message", className="mt-3"))),
         Store(id="stored-static-table"),
         Store(id="stored-selected-rows"),
     ],
@@ -257,4 +251,10 @@ def dump_label_refresh(source, value):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    host, port = os.getenv("HOST", "127.0.0.1"), int(os.getenv("PORT", "8050"))
+    url = f"http://{host}:{port}/"
+    # debug mode runs this module twice (Flask's reloader); only the serving
+    # child process prints the banner
+    if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+        threading.Thread(target=announce_when_ready, args=(url, url), daemon=True).start()
+    app.run(host=host, port=port, debug=True)

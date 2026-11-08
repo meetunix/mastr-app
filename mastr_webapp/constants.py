@@ -4,11 +4,13 @@ from enum import Enum
 
 
 def get_env_var(env_key: str) -> str:
-    env_value = os.getenv(env_key)
-    if env_value is None:
-        print(f"Error: Environment variable {env_key} is not set.", file=sys.stderr)
+    """Value of a required URL variable, without a trailing slash. An empty
+    value is rejected too (it would make all download links relative)."""
+    env_value = (os.getenv(env_key) or "").strip()
+    if not env_value:
+        print(f"Error: Environment variable {env_key} is not set or empty.", file=sys.stderr)
         sys.exit(1)
-    return env_value
+    return env_value.rstrip("/")
 
 
 MASTR_STATIC_URL = get_env_var("MASTR_STATIC_URL")

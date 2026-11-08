@@ -33,7 +33,35 @@ spec:
             - name: MASTR_STATIC_URL
               value: {{ .Values.env.MASTR_STATIC_URL | quote }}
             - name: MASTR_STATIC_PUBLIC_URL
-              value: {{ .Values.env.MASTR_STATIC_PUBLIC_URL | quote }}
+              value: {{ required "env.MASTR_STATIC_PUBLIC_URL must be set" .Values.env.MASTR_STATIC_PUBLIC_URL | quote }}
+            {{- /* URLs for the startup banner: env.MASTR_APP_URL or the ingress hosts */}}
+            {{- $appUrls := list }}
+            {{- if .Values.env.MASTR_APP_URL }}
+            {{- $appUrls = list .Values.env.MASTR_APP_URL }}
+            {{- else if .Values.ingress.enabled }}
+            {{- range .Values.ingress.hosts }}
+            {{- $host := .host }}
+            {{- $scheme := "http" }}
+            {{- range $.Values.ingress.tls }}
+            {{- if has $host .hosts }}
+            {{- $scheme = "https" }}
+            {{- end }}
+            {{- end }}
+            {{- $appUrls = append $appUrls (printf "%s://%s" $scheme $host) }}
+            {{- end }}
+            {{- end }}
+            {{- with $appUrls }}
+            - name: MASTR_APP_URL
+              value: {{ join "," . | quote }}
+            {{- end }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

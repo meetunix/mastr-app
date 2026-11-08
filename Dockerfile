@@ -26,7 +26,9 @@ RUN apt-get update && \
     apt-get install -y apache2 libapache2-mod-wsgi-py3 && \
     apt-get clean
 
+# the banner script prints the URLs of the app to stdout once it answers
 RUN echo "#!/usr/bin/bash" > /apache.sh \
+    && echo 'python3 /app/mastr_webapp/banner.py http://127.0.0.1:8080/ &' >> /apache.sh \
     && echo 'source /etc/apache2/envvars ; exec /usr/sbin/apache2 -DFOREGROUND' >> /apache.sh \
     && chmod +x /apache.sh
 

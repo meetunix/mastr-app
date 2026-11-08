@@ -26,6 +26,11 @@ Die WebUI ist anschließend unter `http://127.0.0.1:8081` erreichbar. `MASTR_STA
 des mastr-tool-Exportservers) ist Pflicht, `MASTR_STATIC_URL` (interner Zugriff auf die Exporte) ist in der
 `docker-compose.yaml` vorkonfiguriert.
 
+Sobald die Anwendung antwortet, schreibt der Container einen Kasten mit Version und URLs ins Log
+(`docker compose logs mastr-app`). Die von außen erreichbare URL kommt aus der optionalen Variable `MASTR_APP_URL`
+(mehrere URLs durch Komma getrennt); ohne sie zeigt der Container `http://localhost:8081` (die Portfreigabe der
+`docker-compose.yaml`). Das Helm-Chart leitet sie aus den Ingress-Hosts ab.
+
 ## Deployment auf Kubernetes mit Helm
 
 Im Verzeichnis [`helm/mastr-app`](helm/mastr-app) liegt ein einfaches Helm-Chart für das Deployment auf einem

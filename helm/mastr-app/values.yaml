@@ -18,11 +18,16 @@ service:
   targetPort: 8080
 
 # Environment variables consumed by the app.
-# MASTR_STATIC_PUBLIC_URL is left empty by default; set it to the
-# public-facing URL of the static exports (e.g. via --set or a parent chart).
+# MASTR_STATIC_PUBLIC_URL is left empty by default and must be set to the
+# public-facing URL of the static exports (e.g. via --set or a parent chart);
+# the chart refuses to render without it.
+# MASTR_APP_URL (optional) is the URL shown in the startup banner of the
+# container log; by default it is derived from the ingress hosts, without
+# ingress the banner shows http://localhost:8081.
 env:
   MASTR_STATIC_URL: https://mastr-static.nachtsieb.de
   MASTR_STATIC_PUBLIC_URL: ""
+  # MASTR_APP_URL: https://mastr-app.example.com
 
 # Ingress for exposing mastr-app outside the cluster.
 ingress:
@@ -36,7 +41,31 @@ ingress:
           pathType: Prefix
   tls: []
 
-resources: {}
+# The app keeps parsed tables in memory (bounded to about 512 MiB) and builds
+# large responses for the biggest tables, so memory is limited explicitly.
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    memory: 2Gi
+
+# Both probes request the start page, which is cheap to render.
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  periodSeconds: 20
+  timeoutSeconds: 10
+  failureThreshold: 6
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
 
 nodeSelector: {}
 
