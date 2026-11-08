@@ -9,6 +9,7 @@ from dash.dcc import Dropdown, Store
 import mastr_webapp.tables as mastr_tables
 from mastr_webapp.banner import announce_when_ready
 from mastr_webapp.download import download_div
+from mastr_webapp.glossar import glossar_div
 from mastr_webapp.impressum import impressum_div, _app_version
 from mastr_webapp.maps import maps_div
 from mastr_webapp.strings import *
@@ -156,6 +157,7 @@ app.layout = dbc.Container(
                             dbc.NavLink("Tabellen", href="/tabellen", id="nav-tabellen"),
                             dbc.NavLink("Karten", href="/karten", id="nav-karten"),
                             dbc.NavLink("Downloads", href="/download", id="nav-download"),
+                            dbc.NavLink("Glossar", href="/glossar", id="nav-glossar"),
                         ],
                         navbar=True,
                         className="me-auto",
@@ -199,6 +201,7 @@ PAGE_CONTENT = {
     "tab-1-static-table": div_static_table,
     "tab-2-maps": maps_div,
     "tab-3-downloads": download_div,
+    "tab-4-glossar": glossar_div,
     "tab-10-impressum": impressum_div,
 }
 
@@ -211,6 +214,7 @@ TAB_PATHS = {
     "/karte": "tab-2-maps",
     "/downloads": "tab-3-downloads",
     "/download": "tab-3-downloads",
+    "/glossar": "tab-4-glossar",
     "/impressum": "tab-10-impressum",
 }
 
@@ -229,6 +233,7 @@ def render_page(pathname):
     Output("nav-tabellen", "active"),
     Output("nav-karten", "active"),
     Output("nav-download", "active"),
+    Output("nav-glossar", "active"),
     Input("url", "pathname"),
     prevent_initial_call=False,
 )
@@ -238,6 +243,7 @@ def set_active_nav(pathname):
         tab == "tab-1-static-table",
         tab == "tab-2-maps",
         tab == "tab-3-downloads",
+        tab == "tab-4-glossar",
     )
 
 @callback(
