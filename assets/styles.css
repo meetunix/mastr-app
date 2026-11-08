@@ -2,3 +2,91 @@
   display: inline-block;
 }
 
+/* slim navbar (see mastr_app.py) */
+.navbar .nav-link,
+.navbar .navbar-brand {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.unit-details-table {
+  font-size: 0.9rem;
+}
+
+.unit-details-table th {
+  width: 45%;
+  font-weight: normal;
+  color: #6c757d;
+}
+
+.unit-details-table td {
+  overflow-wrap: anywhere;
+}
+
+/* next to the map, the details scroll within the height of the map */
+@media (min-width: 992px) {
+  .map-unit-details {
+    max-height: 75vh;
+    overflow-y: auto;
+  }
+}
+
+/* legend over the map (maps.py, map_legend) */
+.map-container {
+  position: relative;
+}
+
+#map-legend {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 10;
+}
+
+.map-legend {
+  background-color: rgba(255, 255, 255, 0.85);
+  color: #444;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  border-collapse: separate;
+  border-spacing: 0;
+  padding: 0.25rem 0.4rem;
+}
+
+.map-legend td {
+  padding: 0.05rem 0.25rem;
+}
+
+.map-legend td.map-legend-number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  padding-left: 1rem;
+}
+
+.map-legend-dot {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.map-legend-status {
+  cursor: pointer;
+  user-select: none;
+}
+
+.map-legend-hidden {
+  opacity: 0.4;
+}
+
+/* line between the statuses and the counts, with some space around it */
+.map-legend-separator td {
+  height: 0.5rem;
+  padding: 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.map-legend-separator + tr td {
+  padding-top: 0.5rem;
+}

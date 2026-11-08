@@ -8,6 +8,8 @@ dependencies = [
     "dash>=3.0.4",
     "dash-bootstrap-components>=1.6.0",
     "pandas>=2.2.3",
+    "psycopg-pool>=3.2",
+    "psycopg[binary]>=3.2",
     "pyarrow>=26.0.0",
     "requests>=2.32.3",
 ]

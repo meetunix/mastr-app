@@ -9,5 +9,11 @@ services:
     environment:
       MASTR_STATIC_URL: https://mastr-static.nachtsieb.de
       MASTR_STATIC_PUBLIC_URL: ${MASTR_STATIC_PUBLIC_URL}
+      # database of mastr-tool, required for the maps page
+      DB_HOST: ${DB_HOST:-}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME:-mastr}
+      DB_USER: ${DB_USER:-}
+      DB_PASSWORD: ${DB_PASSWORD:-}
     ports:
       - "127.0.0.1:8081:8080"

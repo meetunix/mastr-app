@@ -29,6 +29,20 @@ env:
   MASTR_STATIC_PUBLIC_URL: ""
   # MASTR_APP_URL: https://mastr-app.example.com
 
+# Read-only connection to the database of mastr-tool. The maps page reads all
+# its data from it; without database.host it only shows a message (tables
+# and downloads use the exports and work without database).
+database:
+  # e.g. the Service of the mastr-tool chart: <release>-mastr-tool-db
+  host: ""
+  port: 5432
+  name: mastr
+  # Secret with the credentials (required with database.host), e.g. the one
+  # of the mastr-tool chart (<release>-mastr-tool-db) or one for a read-only role
+  existingSecret: ""
+  existingSecretUserKey: username
+  existingSecretPasswordKey: password
+
 # Ingress for exposing mastr-app outside the cluster.
 ingress:
   enabled: false

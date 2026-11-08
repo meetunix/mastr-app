@@ -10,6 +10,7 @@ import mastr_webapp.tables as mastr_tables
 from mastr_webapp.banner import announce_when_ready
 from mastr_webapp.download import download_div
 from mastr_webapp.impressum import impressum_div, _app_version
+from mastr_webapp.maps import maps_div
 from mastr_webapp.strings import *
 from mastr_webapp.util_web import shared_client as mastr_static
 from mastr_webapp.welcome import welcome_modal
@@ -153,6 +154,7 @@ app.layout = dbc.Container(
                     dbc.Nav(
                         [
                             dbc.NavLink("Tabellen", href="/tabellen", id="nav-tabellen"),
+                            dbc.NavLink("Karten", href="/karten", id="nav-karten"),
                             dbc.NavLink("Downloads", href="/download", id="nav-download"),
                         ],
                         navbar=True,
@@ -164,7 +166,8 @@ app.layout = dbc.Container(
             ),
             dark=False,
             color="light",
-            className="mb-4",
+            # the Flatly theme pads the navbar by 1rem
+            className="mb-4 py-1",
         ),
         html.Div(id="page-content"),
         dcc.Store(id="welcome-shown", data=False, storage_type="local"),
@@ -194,6 +197,7 @@ app.layout = dbc.Container(
 # URL PATH -> content mapping
 PAGE_CONTENT = {
     "tab-1-static-table": div_static_table,
+    "tab-2-maps": maps_div,
     "tab-3-downloads": download_div,
     "tab-10-impressum": impressum_div,
 }
@@ -203,6 +207,8 @@ TAB_PATHS = {
     "/": "tab-1-static-table",
     "/static": "tab-1-static-table",
     "/tabellen": "tab-1-static-table",
+    "/karten": "tab-2-maps",
+    "/karte": "tab-2-maps",
     "/downloads": "tab-3-downloads",
     "/download": "tab-3-downloads",
     "/impressum": "tab-10-impressum",
@@ -221,6 +227,7 @@ def render_page(pathname):
 
 @callback(
     Output("nav-tabellen", "active"),
+    Output("nav-karten", "active"),
     Output("nav-download", "active"),
     Input("url", "pathname"),
     prevent_initial_call=False,
@@ -229,6 +236,7 @@ def set_active_nav(pathname):
     tab = TAB_PATHS.get(pathname, "tab-1-static-table")
     return (
         tab == "tab-1-static-table",
+        tab == "tab-2-maps",
         tab == "tab-3-downloads",
     )
 

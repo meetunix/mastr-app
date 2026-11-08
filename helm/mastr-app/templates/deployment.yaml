@@ -54,6 +54,27 @@ spec:
             - name: MASTR_APP_URL
               value: {{ join "," . | quote }}
             {{- end }}
+            {{- /* database of mastr-tool (maps page) */}}
+            {{- with .Values.database }}
+            {{- if .host }}
+            - name: DB_HOST
+              value: {{ .host | quote }}
+            - name: DB_PORT
+              value: {{ .port | default 5432 | quote }}
+            - name: DB_NAME
+              value: {{ .name | default "mastr" | quote }}
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "database.existingSecret must be set with database.host" .existingSecret }}
+                  key: {{ .existingSecretUserKey }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .existingSecret }}
+                  key: {{ .existingSecretPasswordKey }}
+            {{- end }}
+            {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
