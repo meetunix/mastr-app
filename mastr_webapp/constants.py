@@ -18,6 +18,10 @@ MASTR_STATIC_PUBLIC_URL = get_env_var("MASTR_STATIC_PUBLIC_URL")
 MASTR_STATIC_EXPORTS_URL = MASTR_STATIC_URL + "/export/"
 MASTR_STATIC_EXPORTS_PUBLIC_URL = MASTR_STATIC_PUBLIC_URL + "/export/"
 
+# public URL of the tile server (martin in mastr-tool), documented on the page
+# "Tile-Server". Optional: a deployment without a tile server keeps the default.
+MASTR_TILES_PUBLIC_URL = (os.getenv("MASTR_TILES_PUBLIC_URL") or "https://mastr-tiles.nachtsieb.de").rstrip("/")
+
 __IMPORT_TIMESTAMP_PATH = "/import_timestamp"
 __DUMP_DATE_PATH = "/dump_date"
 

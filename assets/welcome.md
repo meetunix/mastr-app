@@ -5,6 +5,7 @@ MaStR-App ermöglicht die Suche und den Download von Daten des
 - **Karten** — Standorte der Anlagen eines Energieträgers in einem Bundesland oder in ganz Deutschland auf einer OpenStreetMap-Karte; ein Klick auf eine Anlage zeigt ihre wichtigsten Daten.
 - **Downloads** — Herunterladen von kompletten Datenauszügen aller zwölf Energieträger (inklusive Solar und Stromverbraucher) als CSV oder Parquet; kleinere Datenauszüge auch als Excel.
 - **Glossar** — Erklärung der wichtigsten Begriffe des Marktstammdatenregisters und der Zusammenhänge zwischen den Tabellen der Datenbank.
+- **Tile-Server** — Anleitung zur Nutzung der Kartenkacheln (Mapbox Vector Tiles) des Tile-Servers in QGIS, MapLibre, OpenLayers und Leaflet, mit einer Übersicht der Layer und ihrer Zoomstufen.
 
 Die Daten stammen aus dem öffentlich zugänglichen
 [Gesamtdatenauszug des Marktstammdatenregisters](https://www.marktstammdatenregister.de/MaStR/Datendownload).

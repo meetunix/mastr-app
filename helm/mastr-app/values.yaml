@@ -28,6 +28,9 @@ env:
   MASTR_STATIC_URL: https://mastr-static.nachtsieb.de
   MASTR_STATIC_PUBLIC_URL: ""
   # MASTR_APP_URL: https://mastr-app.example.com
+  # public URL of the tile server (martin in mastr-tool), shown on the page
+  # "Tile-Server"; without it the page names the public instance
+  # MASTR_TILES_PUBLIC_URL: https://mastr-tiles.example.com
 
 # Read-only connection to the database of mastr-tool. The maps page reads all
 # its data from it; without database.host it only shows a message (tables

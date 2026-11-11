@@ -13,6 +13,7 @@ from mastr_webapp.glossar import glossar_div
 from mastr_webapp.impressum import impressum_div, _app_version
 from mastr_webapp.maps import maps_div
 from mastr_webapp.strings import *
+from mastr_webapp.tile_server import tile_server_div
 from mastr_webapp.util_web import shared_client as mastr_static
 from mastr_webapp.welcome import welcome_modal
 
@@ -158,6 +159,7 @@ app.layout = dbc.Container(
                             dbc.NavLink("Karten", href="/karten", id="nav-karten"),
                             dbc.NavLink("Downloads", href="/download", id="nav-download"),
                             dbc.NavLink("Glossar", href="/glossar", id="nav-glossar"),
+                            dbc.NavLink("Tile-Server", href="/tile-server", id="nav-tile-server"),
                         ],
                         navbar=True,
                         className="me-auto",
@@ -202,6 +204,7 @@ PAGE_CONTENT = {
     "tab-2-maps": maps_div,
     "tab-3-downloads": download_div,
     "tab-4-glossar": glossar_div,
+    "tab-5-tile-server": tile_server_div,
     "tab-10-impressum": impressum_div,
 }
 
@@ -215,6 +218,7 @@ TAB_PATHS = {
     "/downloads": "tab-3-downloads",
     "/download": "tab-3-downloads",
     "/glossar": "tab-4-glossar",
+    "/tile-server": "tab-5-tile-server",
     "/impressum": "tab-10-impressum",
 }
 
@@ -234,6 +238,7 @@ def render_page(pathname):
     Output("nav-karten", "active"),
     Output("nav-download", "active"),
     Output("nav-glossar", "active"),
+    Output("nav-tile-server", "active"),
     Input("url", "pathname"),
     prevent_initial_call=False,
 )
@@ -244,6 +249,7 @@ def set_active_nav(pathname):
         tab == "tab-2-maps",
         tab == "tab-3-downloads",
         tab == "tab-4-glossar",
+        tab == "tab-5-tile-server",
     )
 
 @callback(

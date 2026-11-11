@@ -24,7 +24,8 @@ MASTR_STATIC_PUBLIC_URL=https://mastr-static.example.com docker compose up -d --
 
 Die WebUI ist anschließend unter `http://127.0.0.1:8081` erreichbar. `MASTR_STATIC_PUBLIC_URL` (öffentliche URL
 des mastr-tool-Exportservers) ist Pflicht, `MASTR_STATIC_URL` (interner Zugriff auf die Exporte) ist in der
-`docker-compose.yaml` vorkonfiguriert.
+`docker-compose.yaml` vorkonfiguriert. Die Seite **Tile-Server** nennt die öffentliche URL des Tile-Servers aus der
+optionalen Variable `MASTR_TILES_PUBLIC_URL` (Standard `https://mastr-tiles.nachtsieb.de`).
 
 Sobald die Anwendung antwortet, schreibt der Container einen Kasten mit Version und URLs ins Log
 (`docker compose logs mastr-app`). Die von außen erreichbare URL kommt aus der optionalen Variable `MASTR_APP_URL`

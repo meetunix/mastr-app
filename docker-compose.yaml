@@ -9,6 +9,8 @@ services:
     environment:
       MASTR_STATIC_URL: https://mastr-static.nachtsieb.de
       MASTR_STATIC_PUBLIC_URL: ${MASTR_STATIC_PUBLIC_URL}
+      # public URL of the tile server, shown on the page "Tile-Server"
+      MASTR_TILES_PUBLIC_URL: ${MASTR_TILES_PUBLIC_URL:-}
       # database of mastr-tool, required for the maps page
       DB_HOST: ${DB_HOST:-}
       DB_PORT: ${DB_PORT:-5432}
