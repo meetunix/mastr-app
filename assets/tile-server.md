@@ -17,6 +17,9 @@ Die Kachel-URL hat keine Endung; `…/{z}/{x}/{y}.pbf` leitet mit `301` auf die 
 `/tiles/`-Präfix. Nicht öffentlich sind `DELETE /cache/{source_id}` (Cache leeren) und `/_/metrics` (Prometheus);
 beide antworten mit `403`.
 
+Eine Kachel ohne Einheiten antwortet mit `204 No Content` – das ist kein Fehler. Koordinaten außerhalb der Zoomstufe
+(`x` oder `y` ≥ 2^z) ergeben ebenfalls `204`.
+
 ### Layer und Zoomstufen
 
 Ein Layer je Energieträger, jeweils als Quelle `tiles.<layer>`. Alle Layer liefern Zoom 0–14; darüber antwortet
@@ -24,24 +27,36 @@ Martin weiterhin, die Kacheln kommen dann aber ungecacht aus der Datenbank (`cac
 
 | Layer                    | Inhalt                                               | Zoom | Bündelung                                            |
 |--------------------------|------------------------------------------------------|------|------------------------------------------------------|
-| `tiles.wind`             | Windenergieanlagen                                   | 0–14 | –                                                    |
+| `tiles.wind`             | Windenergieanlagen                                   | 0–14 | z0–6 je Rasterzelle (`anzahl`, `kw`), ab z7 einzeln  |
 | `tiles.solar`            | Solaranlagen                                         | 0–14 | z0–9 je Rasterzelle (`anzahl`, `kw`), ab z10 einzeln |
-| `tiles.biomasse`         | Biomasseanlagen                                      | 0–14 | –                                                    |
-| `tiles.wasser`           | Wasserkraftanlagen                                   | 0–14 | –                                                    |
-| `tiles.geothermie`       | Geothermie-, Grubengas- und Druckentspannungsanlagen | 0–14 | –                                                    |
+| `tiles.biomasse`         | Biomasseanlagen                                      | 0–14 | z0–6 je Rasterzelle (`anzahl`, `kw`), ab z7 einzeln  |
+| `tiles.wasser`           | Wasserkraftanlagen                                   | 0–14 | z0–6 je Rasterzelle (`anzahl`, `kw`), ab z7 einzeln  |
+| `tiles.geothermie`       | Geothermie-, Grubengas- und Druckentspannungsanlagen | 0–14 | z0–6 je Rasterzelle (`anzahl`, `kw`), ab z7 einzeln  |
 | `tiles.stromspeicher`    | Stromspeicher                                        | 0–14 | z0–9 je Rasterzelle (`anzahl`, `kw`), ab z10 einzeln |
-| `tiles.kernkraft`        | Kernkraftwerke                                       | 0–14 | –                                                    |
-| `tiles.verbrennung`      | Verbrennungsanlagen                                  | 0–14 | –                                                    |
-| `tiles.gaserzeuger`      | Gaserzeuger                                          | 0–14 | –                                                    |
-| `tiles.gasspeicher`      | Gasspeicher                                          | 0–14 | –                                                    |
-| `tiles.gasverbraucher`   | Gasverbraucher                                       | 0–14 | –                                                    |
-| `tiles.stromverbraucher` | Stromverbrauchseinheiten                             | 0–14 | –                                                    |
+| `tiles.kernkraft`        | Kernkraftwerke                                       | 0–14 | z0–6 je Rasterzelle (`anzahl`, `kw`), ab z7 einzeln  |
+| `tiles.verbrennung`      | Verbrennungsanlagen                                  | 0–14 | z0–6 je Rasterzelle (`anzahl`, `kw`), ab z7 einzeln  |
+| `tiles.gaserzeuger`      | Gaserzeuger                                          | 0–14 | z0–6 je Rasterzelle (`anzahl`, `kw`), ab z7 einzeln  |
+| `tiles.gasspeicher`      | Gasspeicher                                          | 0–14 | z0–6 je Rasterzelle (`anzahl`, `kw`), ab z7 einzeln  |
+| `tiles.gasverbraucher`   | Gasverbraucher                                       | 0–14 | z0–6 je Rasterzelle (`anzahl`, `kw`), ab z7 einzeln  |
+| `tiles.stromverbraucher` | Stromverbrauchseinheiten                             | 0–14 | z0–6 je Rasterzelle (`anzahl`), ab z7 einzeln        |
 
-Solar und Stromspeicher haben Millionen Einheiten. Unterhalb von Zoom 10 bündelt die Funktion die Punkte deshalb je
-Rasterzelle (64 × 64 Zellen pro Kachel) zu einem Feature mit `anzahl` und `kw`; ab Zoom 10 kommt jede Einheit einzeln.
-Eine z5-Kachel enthielte sonst hunderttausende Punkte und würde mehrere Megabyte groß.
+Unterhalb einer Zoomstufe bündelt jeder Layer seine Punkte je Rasterzelle (64 × 64 Zellen pro Kachel) zu einem
+Feature mit `anzahl` und `kw`; darüber kommt jede Einheit einzeln. Die Grenze hängt an der Zahl der Einheiten: Solar
+und Stromspeicher bündeln bis Zoom 10, die übrigen Layer unterhalb von Zoom 7. `tiles.stromverbraucher` hat im MaStR
+keine Leistungsspalte, seine Zellen tragen nur `anzahl`.
+
+Ohne Bündelung wäre eine z0-Kachel von `tiles.wind` 4,7 MB groß (43.000 Einheiten, gzip 1,5 MB); gebündelt sind es
+rund 50–100 kB. Eine z5-Kachel mit allen Solaranlagen enthielte sonst hunderttausende Punkte.
+
+Ab der Grenze kommen die Einzelpunkte mit allen Attributen. In dichten Regionen sind diese Kacheln deutlich größer als
+die gebündelten: eine z7-Kachel von `tiles.wind` über Nordrhein-Westfalen liegt bei bis zu 600 kB (gzip 220 kB),
+`tiles.verbrennung` bei bis zu 440 kB (gzip 190 kB). Wer die Kacheln selbst vorlädt, sollte das bei diesen Zoomstufen
+einplanen.
 
 ### Attribute
+
+Gebündelte Features (unterhalb der Zoomgrenze) tragen nur `anzahl` und `kw`; die folgenden Attribute gelten für die
+Einzelpunkte ab der Grenze.
 
 Jedes Feature hat `mastr_nr`, `name`, `kw` (Nettonennleistung), `status` (Katalog-ID des Betriebsstatus) und – wo
 vorhanden – `park` (Windpark, Solarpark, Kraftwerk). Dazu kommen für alle Layer `inbetriebnahme` und `stillgelegt_am`
